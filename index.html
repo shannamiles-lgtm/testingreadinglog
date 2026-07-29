@@ -755,13 +755,22 @@ body{margin:0;-webkit-font-smoothing:antialiased}
             <option value="{{ y }}">{{ y }}</option>
           </sc-for>
         </select>
-        <div style="font-weight:700;font-size:13px;margin-bottom:6px">Your teacher</div>
-        <select value="{{ suTeacherId }}" onChange="{{ onSuTeacher }}" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box;margin-bottom:14px">
-          <option value="">Choose a teacher…</option>
-          <sc-for list="{{ teacherOptions }}" as="t" hint-placeholder-count="2">
-            <option value="{{ t.id }}">{{ t.name }}</option>
+        <div style="font-weight:700;font-size:13px;margin-bottom:6px">Your school</div>
+        <select value="{{ suSchoolName }}" onChange="{{ onSuSchoolName }}" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box;margin-bottom:14px">
+          <option value="">Choose a school…</option>
+          <sc-for list="{{ schoolOptions }}" as="sch" hint-placeholder-count="2">
+            <option value="{{ sch }}">{{ sch }}</option>
           </sc-for>
         </select>
+        <sc-if value="{{ suSchoolName }}" hint-placeholder-val="{{ false }}">
+          <div style="font-weight:700;font-size:13px;margin-bottom:6px">Your teacher</div>
+          <select value="{{ suTeacherId }}" onChange="{{ onSuTeacher }}" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box;margin-bottom:14px">
+            <option value="">Choose a teacher…</option>
+            <sc-for list="{{ teacherOptions }}" as="t" hint-placeholder-count="2">
+              <option value="{{ t.id }}">{{ t.name }}</option>
+            </sc-for>
+          </select>
+        </sc-if>
         <sc-if value="{{ suTeacherId }}" hint-placeholder-val="{{ false }}">
           <div style="font-weight:700;font-size:13px;margin-bottom:6px">Your class</div>
           <select value="{{ suClassId }}" onChange="{{ onSuClass }}" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box;margin-bottom:14px">
@@ -789,6 +798,8 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:20px;margin-bottom:20px">Create your teacher account</div>
         <div style="font-weight:700;font-size:13px;margin-bottom:6px">Your name</div>
         <input value="{{ tuName }}" onInput="{{ onTuName }}" placeholder="e.g. Ms. Karen Carpenter" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:14px"></input>
+        <div style="font-weight:700;font-size:13px;margin-bottom:6px">School name</div>
+        <input value="{{ tuSchoolName }}" onInput="{{ onTuSchoolName }}" placeholder="e.g. Lincoln Middle School" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:14px"></input>
         <div style="font-weight:700;font-size:13px;margin-bottom:6px">School year</div>
         <select value="{{ tuSchoolYear }}" onChange="{{ onTuSchoolYear }}" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box;margin-bottom:14px">
           <sc-for list="{{ schoolYearOptions }}" as="y2" hint-placeholder-count="3">
@@ -896,8 +907,8 @@ class Component extends DCLogic {
   state = {
     isMobile: (typeof window !== 'undefined' && window.innerWidth < 900),
     authStage: 'role',
-    suFirstName: '', suLastName: '', suSchoolYear: '2026-2027', suTeacherId: '', suClassId: '', suUsername: '', suPassword: '', suEmail: '',
-    tuName: '', tuSchoolYear: '2026-2027', tuNewPeriod: '', tuClassesDraft: [], tuUsername: '', tuPassword: '', tuEmail: '', tuAdminCode: '',
+    suFirstName: '', suLastName: '', suSchoolYear: '2026-2027', suSchoolName: '', suTeacherId: '', suClassId: '', suUsername: '', suPassword: '', suEmail: '',
+    tuName: '', tuSchoolName: '', tuSchoolYear: '2026-2027', tuNewPeriod: '', tuClassesDraft: [], tuUsername: '', tuPassword: '', tuEmail: '', tuAdminCode: '',
     liUsername: '', liPassword: '', liError: '',
     adminUsername: '', adminPassword: '', adminError: '',
     fpIdentifier: '', fpNewPassword: '', fpStage: 'enter', fpError: '', fpFoundUsername: '',
@@ -944,8 +955,8 @@ class Component extends DCLogic {
   teacherGoalBooks = 6;
   schoolYearOptions = ['2025-2026', '2026-2027', '2027-2028'];
   teachers = [
-    { id: 't1', name: 'Ms. Karen Carpenter', schoolYear: '2026-2027', classes: [{ id: 'c1', period: '1st Period' }, { id: 'c2', period: '3rd Period' }] },
-    { id: 't2', name: 'Mr. James Alvarez', schoolYear: '2026-2027', classes: [{ id: 'c3', period: '2nd Period' }] }
+    { id: 't1', name: 'Ms. Karen Carpenter', schoolName: 'Lincoln Middle School', schoolYear: '2026-2027', classes: [{ id: 'c1', period: '1st Period' }, { id: 'c2', period: '3rd Period' }] },
+    { id: 't2', name: 'Mr. James Alvarez', schoolName: 'Roosevelt Middle School', schoolYear: '2026-2027', classes: [{ id: 'c3', period: '2nd Period' }] }
   ];
   _idCounter = 1000;
   _bookIdCounter = 100;
@@ -1062,7 +1073,7 @@ class Component extends DCLogic {
           this.accounts = [{ username: 'admin', password: 'wildread2026', role: 'admin', email: 'admin@wildread.app' }, ...this.accounts];
         }
       }
-      if (parsed.teachers) this.teachers = parsed.teachers;
+      if (parsed.teachers) this.teachers = parsed.teachers.map(t => ({ schoolName: '', ...t }));
       if (parsed.rosterRaw) this.rosterRaw = parsed.rosterRaw;
       if (parsed.idCounter) this._idCounter = parsed.idCounter;
     } catch (e) {}
@@ -1294,10 +1305,10 @@ class Component extends DCLogic {
 
   submitTeacherSignup() {
     const s = this.state;
-    if (!s.tuName.trim() || s.tuClassesDraft.length === 0) return;
+    if (!s.tuName.trim() || !s.tuSchoolName.trim() || s.tuClassesDraft.length === 0) return;
     this._idCounter += 1;
     const teacherId = 't' + this._idCounter;
-    const newTeacher = { id: teacherId, name: s.tuName.trim(), schoolYear: s.tuSchoolYear, classes: s.tuClassesDraft };
+    const newTeacher = { id: teacherId, name: s.tuName.trim(), schoolName: s.tuSchoolName.trim(), schoolYear: s.tuSchoolYear, classes: s.tuClassesDraft };
     this.teachers = [...this.teachers, newTeacher];
     if (s.tuUsername.trim()) this.accounts = [...this.accounts, { username: s.tuUsername.trim(), password: s.tuPassword, role: 'teacher', teacherId, email: s.tuEmail.trim() }];
     if (s.tuAdminCode.trim().toLowerCase() === 'readmore' && s.tuUsername.trim()) {
@@ -1636,15 +1647,19 @@ class Component extends DCLogic {
           save: () => this.adminSavePassword(a.username)
         };
       }),
-      schoolYearOptions: this.schoolYearOptions, teacherOptions: this.teachers.map(t => ({ id: t.id, name: t.name })),
+      schoolYearOptions: this.schoolYearOptions,
+      schoolOptions: [...new Set(this.teachers.map(t => t.schoolName).filter(Boolean))],
+      teacherOptions: this.teachers.filter(t => t.schoolName === s.suSchoolName).map(t => ({ id: t.id, name: t.name })),
       suFirstName: s.suFirstName, onSuFirstName: (e) => this.setState({ suFirstName: e.target.value }),
       suLastName: s.suLastName, onSuLastName: (e) => this.setState({ suLastName: e.target.value }),
       suSchoolYear: s.suSchoolYear, onSuSchoolYear: (e) => this.setState({ suSchoolYear: e.target.value }),
+      suSchoolName: s.suSchoolName, onSuSchoolName: (e) => this.setState({ suSchoolName: e.target.value, suTeacherId: '', suClassId: '' }),
       suTeacherId: s.suTeacherId, onSuTeacher: (e) => this.setState({ suTeacherId: e.target.value, suClassId: '' }),
       suClassId: s.suClassId, onSuClass: (e) => this.setState({ suClassId: e.target.value }),
       classOptionsForSuTeacher: (this.teachers.find(t => t.id === s.suTeacherId) || { classes: [] }).classes,
       submitStudentSignup: () => this.submitStudentSignup(),
       tuName: s.tuName, onTuName: (e) => this.setState({ tuName: e.target.value }),
+      tuSchoolName: s.tuSchoolName, onTuSchoolName: (e) => this.setState({ tuSchoolName: e.target.value }),
       tuSchoolYear: s.tuSchoolYear, onTuSchoolYear: (e) => this.setState({ tuSchoolYear: e.target.value }),
       tuNewPeriod: s.tuNewPeriod, onTuNewPeriod: (e) => this.setState({ tuNewPeriod: e.target.value }),
       addTuClass: () => this.addTuClass(),
