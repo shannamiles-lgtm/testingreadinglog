@@ -113,6 +113,9 @@ body{margin:0;-webkit-font-smoothing:antialiased}
       </div>
       <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;color:#16283D">WILDREAD</div>
     </div>
+    <sc-if value="{{ isStudentRole }}" hint-placeholder-val="{{ true }}">
+      <div onClick="{{ toggleAccountPanel }}" style="width:32px;height:32px;border-radius:50%;background:#FFC933;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:800;font-size:12px;color:#16283D;cursor:pointer;flex-shrink:0">{{ student.initials }}</div>
+    </sc-if>
   </div>
   </sc-if>
 
