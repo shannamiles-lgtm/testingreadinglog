@@ -21,7 +21,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
 <div style="display:flex;min-height:100vh;background:#F5FAFE;font-family:'Inter',sans-serif;color:#16283D;position:relative;overflow-x:hidden">
 
 <sc-if value="{{ authDone }}" hint-placeholder-val="{{ false }}">
-<sc-if value="{{ showSidebar }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ showStudentSidebar }}" hint-placeholder-val="{{ true }}">
 <div style="width:224px;flex-shrink:0;background:#FFFFFF;border-right:1px solid #D3E7F7;display:flex;flex-direction:column;padding:28px 16px;gap:4px;position:sticky;top:0;height:100vh;box-sizing:border-box">
   <div style="display:flex;align-items:center;gap:10px;padding:0 8px 28px">
     <div style="width:40px;height:40px;border-radius:14px;background:#2E5FA3;position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center">
@@ -103,7 +103,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
 
 <div style="flex:1;display:flex;flex-direction:column;min-width:0;padding-bottom:{{ mobileBottomPad }}">
 
-  <sc-if value="{{ !showSidebar }}" hint-placeholder-val="{{ false }}">
+  <sc-if value="{{ !showStudentSidebar }}" hint-placeholder-val="{{ false }}">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#FFFFFF;border-bottom:1px solid #D3E7F7;position:sticky;top:0;z-index:5">
     <div style="display:flex;align-items:center;gap:8px">
       <div style="width:32px;height:32px;border-radius:11px;background:#2E5FA3;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0">
@@ -1561,7 +1561,7 @@ class Component extends DCLogic {
     const finished = s.logFinished;
 
     return {
-      showSidebar, showBottomNav: s.isMobile && isStudentRole, isStudentRole, isTeacherRole,
+      showSidebar, showStudentSidebar: showSidebar && isStudentRole, showBottomNav: s.isMobile && isStudentRole, isStudentRole, isTeacherRole,
       mobileBottomPad: (s.isMobile && isStudentRole) ? '72px' : '0px',
       contentPad: s.isMobile ? '16px' : '32px',
       student: this.student, teacherGoalMinutes: this.teacherGoalMinutes, teacherGoalBooks: this.teacherGoalBooks,
