@@ -183,7 +183,12 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         <div onClick="{{ s.select }}" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;align-items:center;padding:12px;border-radius:14px;cursor:pointer" style-hover="background:#F5FAFE">
           <div style="display:flex;align-items:center;gap:10px">
             <div style="width:32px;height:32px;border-radius:50%;background:{{ s.avatarColor }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#16283D;flex-shrink:0">{{ s.initials }}</div>
-            <div style="font-weight:600;font-size:14px">{{ s.name }}</div>
+            <div>
+              <div style="font-weight:600;font-size:14px">{{ s.fullName }}</div>
+              <sc-if value="{{ s.hasUsername }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:12px;color:#9AA7B2">{{ s.username }}</div>
+              </sc-if>
+            </div>
           </div>
           <div style="font-size:14px;color:#5B7185">{{ s.minutesRead }} / {{ s.minutesGoal }}</div>
           <div style="font-size:14px;color:#5B7185">{{ s.booksRead }} / {{ s.booksGoal }}</div>
@@ -200,7 +205,10 @@ body{margin:0;-webkit-font-smoothing:antialiased}
             <div style="display:flex;align-items:center;gap:12px">
               <div style="width:48px;height:48px;border-radius:50%;background:{{ selectedStudent.avatarColor }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#16283D">{{ selectedStudent.initials }}</div>
               <div>
-                <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:18px">{{ selectedStudent.name }}</div>
+                <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:18px">{{ selectedStudent.fullName }}</div>
+                <sc-if value="{{ selectedStudent.hasUsername }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:#9AA7B2">{{ selectedStudent.username }}</div>
+                </sc-if>
                 <div style="font-size:13px;color:#5B7185">{{ selectedStudent.pct }}% toward goal</div>
               </div>
             </div>
@@ -1037,14 +1045,14 @@ class Component extends DCLogic {
   ];
 
   rosterRaw = [
-    { id: 1, name: 'Ava M.', minutesRead: 520, minutesGoal: 600, booksRead: 7, booksGoal: 8, badgesCount: 9, avatarColor: '#EDE9FE', teacherId: 't1', classId: 'c1' },
-    { id: 2, name: 'Liam K.', minutesRead: 310, minutesGoal: 600, booksRead: 4, booksGoal: 8, badgesCount: 5, avatarColor: '#D9F4F0', teacherId: 't1', classId: 'c1' },
-    { id: 3, name: 'Sophia R.', minutesRead: 590, minutesGoal: 600, booksRead: 8, booksGoal: 8, badgesCount: 11, avatarColor: '#FFF6DC', teacherId: 't1', classId: 'c1' },
-    { id: 4, name: 'Noah T.', minutesRead: 210, minutesGoal: 600, booksRead: 3, booksGoal: 8, badgesCount: 3, avatarColor: '#EAF4FC', teacherId: 't1', classId: 'c1' },
-    { id: 5, name: 'Mia P.', minutesRead: 460, minutesGoal: 600, booksRead: 6, booksGoal: 8, badgesCount: 8, avatarColor: '#EDE9FE', teacherId: 't1', classId: 'c2' },
-    { id: 6, name: 'Ethan G.', minutesRead: 150, minutesGoal: 600, booksRead: 2, booksGoal: 8, badgesCount: 2, avatarColor: '#D9F4F0', teacherId: 't1', classId: 'c2' },
-    { id: 7, name: 'Chloe B.', minutesRead: 480, minutesGoal: 600, booksRead: 5, booksGoal: 8, badgesCount: 7, avatarColor: '#FFF6DC', teacherId: 't2', classId: 'c3' },
-    { id: 8, name: 'Jordan L.', minutesRead: 460, minutesGoal: 600, booksRead: 6, booksGoal: 8, badgesCount: 6, avatarColor: '#EAF4FC', teacherId: 't2', classId: 'c3' }
+    { id: 1, name: 'Ava M.', firstName: 'Ava', lastName: 'Morales', username: 'AMorales4821', minutesRead: 520, minutesGoal: 600, booksRead: 7, booksGoal: 8, badgesCount: 9, avatarColor: '#EDE9FE', teacherId: 't1', classId: 'c1' },
+    { id: 2, name: 'Liam K.', firstName: 'Liam', lastName: 'Kim', username: 'LKim7734', minutesRead: 310, minutesGoal: 600, booksRead: 4, booksGoal: 8, badgesCount: 5, avatarColor: '#D9F4F0', teacherId: 't1', classId: 'c1' },
+    { id: 3, name: 'Sophia R.', firstName: 'Sophia', lastName: 'Reyes', username: 'SReyes2290', minutesRead: 590, minutesGoal: 600, booksRead: 8, booksGoal: 8, badgesCount: 11, avatarColor: '#FFF6DC', teacherId: 't1', classId: 'c1' },
+    { id: 4, name: 'Noah T.', firstName: 'Noah', lastName: 'Turner', username: 'NTurner5561', minutesRead: 210, minutesGoal: 600, booksRead: 3, booksGoal: 8, badgesCount: 3, avatarColor: '#EAF4FC', teacherId: 't1', classId: 'c1' },
+    { id: 5, name: 'Mia P.', firstName: 'Mia', lastName: 'Patel', username: 'MPatel3348', minutesRead: 460, minutesGoal: 600, booksRead: 6, booksGoal: 8, badgesCount: 8, avatarColor: '#EDE9FE', teacherId: 't1', classId: 'c2' },
+    { id: 6, name: 'Ethan G.', firstName: 'Ethan', lastName: 'Garcia', username: 'EGarcia9012', minutesRead: 150, minutesGoal: 600, booksRead: 2, booksGoal: 8, badgesCount: 2, avatarColor: '#D9F4F0', teacherId: 't1', classId: 'c2' },
+    { id: 7, name: 'Chloe B.', firstName: 'Chloe', lastName: 'Bennett', username: 'CBennett6675', minutesRead: 480, minutesGoal: 600, booksRead: 5, booksGoal: 8, badgesCount: 7, avatarColor: '#FFF6DC', teacherId: 't2', classId: 'c3' },
+    { id: 8, name: 'Jordan L.', firstName: 'Jordan', lastName: 'Lee', username: 'JLee1189', minutesRead: 460, minutesGoal: 600, booksRead: 6, booksGoal: 8, badgesCount: 6, avatarColor: '#EAF4FC', teacherId: 't2', classId: 'c3' }
   ];
 
   confetti = Array.from({ length: 32 }, (_, i) => {
@@ -1097,7 +1105,7 @@ class Component extends DCLogic {
         }
       }
       if (parsed.teachers) this.teachers = parsed.teachers.map(t => ({ schoolName: '', ...t }));
-      if (parsed.rosterRaw) this.rosterRaw = parsed.rosterRaw;
+      if (parsed.rosterRaw) this.rosterRaw = parsed.rosterRaw.map(r => ({ firstName: '', lastName: '', username: '', ...r }));
       if (parsed.idCounter) this._idCounter = parsed.idCounter;
       if (parsed.schoolNames) this.schoolNames = parsed.schoolNames;
     } catch (e) {}
@@ -1239,7 +1247,7 @@ class Component extends DCLogic {
     const studentId = this._idCounter;
     this.student = { name: displayName, initials, minutesGoal: 600, minutesCurrent: 0, booksGoal: 8, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId };
     this.resetStudentProgress();
-    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, minutesRead: 0, minutesGoal: 600, booksRead: 0, booksGoal: 8, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId }];
+    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: 600, booksRead: 0, booksGoal: 8, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId }];
     if (s.suUsername.trim()) this.accounts = [...this.accounts, { username: s.suUsername.trim(), password: s.suPassword, role: 'student', studentId, email: s.suEmail.trim() }];
     this.saveData();
     this.saveSession({ role: 'student', studentId, username: s.suUsername.trim() });
@@ -1255,6 +1263,8 @@ class Component extends DCLogic {
   }
 
   csvRow(vals) { return vals.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','); }
+
+  escapeHtml(v) { return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
   exportStudentExcel() {
     const rows = [this.csvRow(['Title', 'Author', 'Status', 'Minutes', 'Date Range'])];
@@ -1284,8 +1294,8 @@ class Component extends DCLogic {
     const cls = t.classes.find(c => c.id === s.selectedClassId) || t.classes[0];
     const roster = this.rosterRaw.filter(r => r.classId === cls.id);
     const pctOf = (r) => Math.round(((r.minutesRead / r.minutesGoal) + (r.booksRead / r.booksGoal)) / 2 * 100);
-    const rows = [this.csvRow(['Student', 'Minutes Read', 'Minutes Goal', 'Books Read', 'Books Goal', 'Goal %', 'Badges'])];
-    roster.forEach(r => rows.push(this.csvRow([r.name, r.minutesRead, r.minutesGoal, r.booksRead, r.booksGoal, pctOf(r) + '%', r.badgesCount])));
+    const rows = [this.csvRow(['First Name', 'Last Name', 'Username', 'Minutes Read', 'Minutes Goal', 'Books Read', 'Books Goal', 'Goal %', 'Badges'])];
+    roster.forEach(r => rows.push(this.csvRow([r.firstName || r.name, r.lastName || '', r.username || '', r.minutesRead, r.minutesGoal, r.booksRead, r.booksGoal, pctOf(r) + '%', r.badgesCount])));
     this.downloadCSV(`${t.name.replace(/\s+/g, '_')}_${cls.period.replace(/\s+/g, '_')}_roster.csv`, rows.join('\n'));
   }
 
@@ -1297,12 +1307,12 @@ class Component extends DCLogic {
     const pctOf = (r) => Math.round(((r.minutesRead / r.minutesGoal) + (r.booksRead / r.booksGoal)) / 2 * 100);
     const w = window.open('', '_blank');
     if (!w) return;
-    w.document.write(`<html><head><title>${t.name} - ${cls.period}</title>
+    w.document.write(`<html><head><title>${this.escapeHtml(t.name)} - ${this.escapeHtml(cls.period)}</title>
       <style>body{font-family:Arial,sans-serif;padding:40px;color:#16283D}h1{color:#2E5FA3}table{width:100%;border-collapse:collapse;margin-top:20px}td,th{border:1px solid #D3E7F7;padding:8px;text-align:left;font-size:13px}</style>
       </head><body>
-      <h1>${t.name}, ${cls.period}</h1>
-      <table><tr><th>Student</th><th>Minutes Read</th><th>Minutes Goal</th><th>Books Read</th><th>Books Goal</th><th>Goal %</th><th>Badges</th></tr>
-      ${roster.map(r => `<tr><td>${r.name}</td><td>${r.minutesRead}</td><td>${r.minutesGoal}</td><td>${r.booksRead}</td><td>${r.booksGoal}</td><td>${pctOf(r)}%</td><td>${r.badgesCount}</td></tr>`).join('')}
+      <h1>${this.escapeHtml(t.name)}, ${this.escapeHtml(cls.period)}</h1>
+      <table><tr><th>First Name</th><th>Last Name</th><th>Username</th><th>Minutes Read</th><th>Minutes Goal</th><th>Books Read</th><th>Books Goal</th><th>Goal %</th><th>Badges</th></tr>
+      ${roster.map(r => `<tr><td>${this.escapeHtml(r.firstName || r.name)}</td><td>${this.escapeHtml(r.lastName || '')}</td><td>${this.escapeHtml(r.username || '')}</td><td>${r.minutesRead}</td><td>${r.minutesGoal}</td><td>${r.booksRead}</td><td>${r.booksGoal}</td><td>${pctOf(r)}%</td><td>${r.badgesCount}</td></tr>`).join('')}
       </table></body></html>`);
     w.document.close(); w.focus();
     setTimeout(() => w.print(), 300);
@@ -1536,7 +1546,9 @@ class Component extends DCLogic {
     const activeClass = currentTeacher.classes.find(c => c.id === activeClassId);
     const rosterForClass = this.rosterRaw.filter(r => r.classId === activeClassId);
 
-    let rosterSorted = [...rosterForClass].filter(r => r.name.toLowerCase().includes(s.teacherSearch.toLowerCase()));
+    const fullNameOf = (r) => (r.firstName || r.lastName) ? `${r.firstName} ${r.lastName}`.trim() : r.name;
+    const searchQ = s.teacherSearch.toLowerCase();
+    let rosterSorted = [...rosterForClass].filter(r => r.name.toLowerCase().includes(searchQ) || (r.username || '').toLowerCase().includes(searchQ));
     const pctOf = (r) => Math.round(((r.minutesRead / r.minutesGoal) + (r.booksRead / r.booksGoal)) / 2 * 100);
     if (s.teacherSort === 'name') rosterSorted.sort((a, b) => a.name.localeCompare(b.name));
     if (s.teacherSort === 'minutes') rosterSorted.sort((a, b) => b.minutesRead - a.minutesRead);
@@ -1544,7 +1556,8 @@ class Component extends DCLogic {
     if (s.teacherSort === 'goal') rosterSorted.sort((a, b) => pctOf(b) - pctOf(a));
 
     const rosterView = rosterSorted.map(r => ({
-      ...r, pct: pctOf(r), initials: r.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
+      ...r, pct: pctOf(r), fullName: fullNameOf(r), hasUsername: !!r.username,
+      initials: r.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
       select: () => this.setState({ selectedStudentId: r.id })
     }));
 
@@ -1553,7 +1566,7 @@ class Component extends DCLogic {
 
     const selStudentRaw = this.rosterRaw.find(r => r.id === s.selectedStudentId);
     const selectedStudent = selStudentRaw ? {
-      ...selStudentRaw, pct: pctOf(selStudentRaw),
+      ...selStudentRaw, pct: pctOf(selStudentRaw), fullName: fullNameOf(selStudentRaw), hasUsername: !!selStudentRaw.username,
       initials: selStudentRaw.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
       minutesArc: Math.round(Math.min(1, selStudentRaw.minutesRead / selStudentRaw.minutesGoal) * 360),
       booksArc: Math.round(Math.min(1, selStudentRaw.booksRead / selStudentRaw.booksGoal) * 360)
