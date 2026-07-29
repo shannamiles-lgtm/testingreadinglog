@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wildread",
+      "runtimeExecutable": "powershell.exe",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\shann\\Desktop\\Test Reading Log Site\\.claude\\serve.ps1",
+        "-Port",
+        "5173"
+      ],
+      "port": 5173
+    }
+  ]
+}
