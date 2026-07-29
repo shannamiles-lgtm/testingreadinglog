@@ -317,7 +317,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         <div style="display:flex;gap:20px;flex-wrap:wrap">
           <sc-for list="{{ recentBadgesView }}" as="b" hint-placeholder-count="3">
             <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:76px">
-              <div style="width:64px;height:64px;border-radius:50%;background:{{ b.color }};display:flex;align-items:center;justify-content:center;position:relative">
+              <div style="width:64px;height:64px;border-radius:50%;background:{{ b.circleColor }};display:flex;align-items:center;justify-content:center;position:relative">
                 <sc-if value="{{ b.isBook }}" hint-placeholder-val="{{ false }}"><div style="width:30px;height:24px;border:2.5px solid #fff;border-radius:4px;position:relative"><div style="position:absolute;top:0;left:50%;width:2px;height:100%;background:#fff"></div></div></sc-if>
                 <sc-if value="{{ b.isClock }}" hint-placeholder-val="{{ false }}"><div style="width:28px;height:28px;border-radius:50%;border:2.5px solid #fff;position:relative"><div style="position:absolute;top:50%;left:50%;width:9px;height:2px;background:#fff;transform:translate(-2px,-1px) rotate(-40deg);transform-origin:0 50%"></div><div style="position:absolute;top:50%;left:50%;width:6px;height:2px;background:#fff;transform:translate(-1px,0) rotate(40deg);transform-origin:0 50%"></div></div></sc-if>
                 <sc-if value="{{ b.isFlag }}" hint-placeholder-val="{{ false }}"><div style="width:3px;height:26px;background:#fff;border-radius:2px;position:relative"><div style="position:absolute;top:0;left:3px;width:0;height:0;border-top:8px solid #fff;border-right:10px solid transparent"></div></div></sc-if>
