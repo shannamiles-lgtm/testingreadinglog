@@ -568,7 +568,12 @@ body{margin:0;-webkit-font-smoothing:antialiased}
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px">
         <sc-for list="{{ booksFiltered }}" as="b" hint-placeholder-count="6">
           <div style="background:#FFFFFF;border-radius:18px;padding:14px;box-shadow:0 2px 8px rgba(22,40,61,0.06)">
-            <div style="width:100%;height:110px;border-radius:12px;background:repeating-linear-gradient(135deg,#EAF4FC,#EAF4FC 8px,#D3E7F7 8px,#D3E7F7 16px);margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:9px;color:#5B7185">COVER</div>
+            <sc-if value="{{ b.hasCover }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ b.coverUrl }}" style="width:100%;height:110px;object-fit:cover;border-radius:12px;margin-bottom:12px;display:block;background:#EAF4FC"></img>
+            </sc-if>
+            <sc-if value="{{ !b.hasCover }}" hint-placeholder-val="{{ true }}">
+              <div style="width:100%;height:110px;border-radius:12px;background:repeating-linear-gradient(135deg,#EAF4FC,#EAF4FC 8px,#D3E7F7 8px,#D3E7F7 16px);margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:9px;color:#5B7185">COVER</div>
+            </sc-if>
             <div style="font-weight:700;font-size:14px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.title }}</div>
             <div style="font-size:12px;color:#5B7185;margin-bottom:10px">{{ b.author }}</div>
             <div style="display:flex;justify-content:space-between;align-items:center">
@@ -1541,7 +1546,7 @@ class Component extends DCLogic {
     let booksFiltered = this.bookCatalog.filter(b => s.bookFilter === 'all' || b.status === s.bookFilter);
     if (s.bookSort === 'title') booksFiltered = [...booksFiltered].sort((a, b) => a.title.localeCompare(b.title));
     if (s.bookSort === 'genre') booksFiltered = [...booksFiltered].sort((a, b) => a.genre.localeCompare(b.genre));
-    booksFiltered = booksFiltered.map(b => ({ ...b, statusBg: statusColors[b.status].bg, statusColor: statusColors[b.status].color, statusLabel: statusColors[b.status].label }));
+    booksFiltered = booksFiltered.map(b => ({ ...b, statusBg: statusColors[b.status].bg, statusColor: statusColors[b.status].color, statusLabel: statusColors[b.status].label, hasCover: !!b.coverUrl }));
 
     const ratingColors = ['#E3E8ED', '#EDE9FE', '#EDE9FE', '#8B7CF0', '#8B7CF0'];
     const ratingCircles = [1, 2, 3, 4, 5].map(n => ({ n, color: n <= s.summaryRating ? '#FFC933' : '#E3E8ED', select: () => this.setState({ summaryRating: n }) }));
