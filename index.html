@@ -446,6 +446,14 @@ body{margin:0;-webkit-font-smoothing:antialiased}
 
         <div style="background:#FFFFFF;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(22,40,61,0.06);margin-bottom:16px">
           <div style="font-weight:700;font-size:13px;margin-bottom:8px">Book title</div>
+          <sc-if value="{{ hasExistingBooks }}" hint-placeholder-val="{{ true }}">
+            <select onChange="{{ onExistingBook }}" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box;margin-bottom:8px">
+              <option value="">Choose from your books…</option>
+              <sc-for list="{{ existingBooks }}" as="eb" hint-placeholder-count="3">
+                <option value="{{ eb.title }}">{{ eb.title }}</option>
+              </sc-for>
+            </select>
+          </sc-if>
           <input value="{{ bookTitle }}" onInput="{{ onBookTitle }}" placeholder="Type the title…" style="width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid #D3E7F7;font-size:15px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box"></input>
         </div>
 
@@ -1464,7 +1472,7 @@ class Component extends DCLogic {
     this.saveData();
 
     this.setState({
-      logStep: 2, timerRunning: false,
+      logStep: 2, timerRunning: false, logNote: '',
       milestoneHit: newlyEarned.length > 0,
       justEarnedBadgeName: newlyEarned[0] || ''
     });
@@ -1602,8 +1610,8 @@ class Component extends DCLogic {
       stopProp: (e) => this.stopProp(e),
 
       goDashboard: () => this.setScreen('dashboard'),
-      goLog: () => { this.setState({ logSelectedBook: null, bookTitle: '', coverSelected: null, coverApiResults: [], coverMode: 'search', coverSearchQuery: '', logFinished: false, logStep: 1, milestoneHit: false, justEarnedBadgeName: '' }); this.setScreen('log'); },
-      goLogFinish: () => { this.setState({ logSelectedBook: null, bookTitle: '', coverSelected: null, coverApiResults: [], coverMode: 'search', coverSearchQuery: '', logFinished: true, logStep: 1, milestoneHit: false, justEarnedBadgeName: '' }); this.setScreen('log'); },
+      goLog: () => { this.setState({ logSelectedBook: null, bookTitle: '', coverSelected: null, coverApiResults: [], coverMode: 'search', coverSearchQuery: '', logFinished: false, logStep: 1, logNote: '', milestoneHit: false, justEarnedBadgeName: '' }); this.setScreen('log'); },
+      goLogFinish: () => { this.setState({ logSelectedBook: null, bookTitle: '', coverSelected: null, coverApiResults: [], coverMode: 'search', coverSearchQuery: '', logFinished: true, logStep: 1, logNote: '', milestoneHit: false, justEarnedBadgeName: '' }); this.setScreen('log'); },
       goBooks: () => this.setScreen('books'),
       goBadges: () => this.setScreen('badges'),
       goSummary: () => this.setScreen('summary'),
@@ -1624,6 +1632,16 @@ class Component extends DCLogic {
       logStep: s.logStep, bookSearch: s.bookSearch, onBookSearch: (e) => this.setState({ bookSearch: e.target.value }), bookResults,
       logSelectedBook: s.logSelectedBook, logMinutes: s.logMinutes,
       bookTitle: s.bookTitle, onBookTitle: (e) => this.setState({ bookTitle: e.target.value }),
+      hasExistingBooks: this.bookCatalog.length > 0,
+      existingBooks: this.bookCatalog.map(b => ({ title: b.title })),
+      onExistingBook: (e) => {
+        const chosen = this.bookCatalog.find(b => b.title === e.target.value);
+        if (!chosen) return;
+        this.setState({
+          bookTitle: chosen.title,
+          coverSelected: chosen.coverUrl ? { title: chosen.title, author: chosen.author, isbn: chosen.isbn, coverUrl: chosen.coverUrl } : null
+        });
+      },
       coverMode: s.coverMode, coverMatch, noCoverMatch: !coverMatch, hasCoverMatch: !!coverMatch,
       hasCoverImage: !!(coverMatch && coverMatch.coverUrl), noCoverImageForMatch: !!coverMatch && !coverMatch.coverUrl,
       coverImageUrl: coverMatch ? coverMatch.coverUrl : '',
