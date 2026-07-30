@@ -973,7 +973,7 @@ class Component extends DCLogic {
     draftBooksGoal: 8,
     bookFilter: 'all',
     bookSort: 'recent',
-    summaryBookId: 1,
+    summaryBookId: null,
     summaryRating: 4,
     summaryText: '',
     summaryRecommend: true,
@@ -1473,7 +1473,9 @@ class Component extends DCLogic {
   }
 
   submitSummary() {
-    this.pastSummariesRaw = [{ title: (this.bookCatalog.find(b => b.id === this.state.summaryBookId) || {}).title || 'Book', rating: this.state.summaryRating, date: 'Today', text: this.state.summaryText || '(no summary text yet)' }, ...this.pastSummariesRaw];
+    const bookId = this.bookCatalog.some(b => b.id === this.state.summaryBookId) ? this.state.summaryBookId : (this.bookCatalog[0] && this.bookCatalog[0].id);
+    const book = this.bookCatalog.find(b => b.id === bookId);
+    this.pastSummariesRaw = [{ title: book ? book.title : 'Book', rating: this.state.summaryRating, date: 'Today', text: this.state.summaryText || '(no summary text yet)' }, ...this.pastSummariesRaw];
     this.recomputeBadges();
     this.syncRosterEntry();
     this.saveData();
@@ -1543,6 +1545,7 @@ class Component extends DCLogic {
 
     const ratingColors = ['#E3E8ED', '#EDE9FE', '#EDE9FE', '#8B7CF0', '#8B7CF0'];
     const ratingCircles = [1, 2, 3, 4, 5].map(n => ({ n, color: n <= s.summaryRating ? '#FFC933' : '#E3E8ED', select: () => this.setState({ summaryRating: n }) }));
+    const effectiveSummaryBookId = this.bookCatalog.some(b => b.id === s.summaryBookId) ? s.summaryBookId : (this.bookCatalog[0] && this.bookCatalog[0].id);
 
     const pastSummaries = this.pastSummariesRaw.map(sm => ({ ...sm, dots: [1, 2, 3, 4, 5].map(n => ({ color: n <= sm.rating ? '#FFC933' : '#E3E8ED' })) }));
 
@@ -1637,7 +1640,7 @@ class Component extends DCLogic {
       submitLog: () => this.submitLog(), milestoneHit: s.milestoneHit, justEarnedBadgeName: s.justEarnedBadgeName, confetti: this.confetti,
       logAnother: () => this.setState({ logStep: 1, logSelectedBook: null, bookTitle: '', coverSelected: null, coverApiResults: [], coverSearchQuery: '', logFinished: false, logMinutes: 20, logNote: '', milestoneHit: false, justEarnedBadgeName: '' }),
 
-      summaryBookId: s.summaryBookId, onSummaryBook: (e) => this.setState({ summaryBookId: Number(e.target.value) }), books: this.bookCatalog,
+      summaryBookId: effectiveSummaryBookId, onSummaryBook: (e) => this.setState({ summaryBookId: Number(e.target.value) }), books: this.bookCatalog,
       ratingCircles, summaryText: s.summaryText, onSummaryText: (e) => this.setState({ summaryText: e.target.value }),
       toggleRecommend: () => this.setState(st => ({ summaryRecommend: !st.summaryRecommend })),
       recommendTrackColor: s.summaryRecommend ? '#8B7CF0' : '#D3E7F7', recommendThumbLeft: s.summaryRecommend ? '22px' : '3px',
