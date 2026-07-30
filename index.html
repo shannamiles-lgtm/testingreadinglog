@@ -575,7 +575,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px">
         <sc-for list="{{ booksFiltered }}" as="b" hint-placeholder-count="6">
-          <div style="background:#FFFFFF;border-radius:18px;padding:14px;box-shadow:0 2px 8px rgba(22,40,61,0.06)">
+          <div onClick="{{ b.select }}" style="background:#FFFFFF;border-radius:18px;padding:14px;box-shadow:0 2px 8px rgba(22,40,61,0.06);cursor:pointer">
             <sc-if value="{{ b.hasCover }}" hint-placeholder-val="{{ false }}">
               <img src="{{ b.coverUrl }}" style="width:100%;height:110px;object-fit:cover;border-radius:12px;margin-bottom:12px;display:block;background:#EAF4FC"></img>
             </sc-if>
@@ -592,6 +592,47 @@ body{margin:0;-webkit-font-smoothing:antialiased}
           </div>
         </sc-for>
       </div>
+
+      <sc-if value="{{ selectedBook }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ closeBookDetail }}" style="position:fixed;inset:0;background:rgba(22,40,61,0.35);z-index:20;display:flex;justify-content:flex-end">
+          <div onClick="{{ stopProp }}" style="width:380px;max-width:90vw;height:100%;background:#FFFFFF;padding:28px;box-sizing:border-box;overflow-y:auto;box-shadow:-8px 0 24px rgba(22,40,61,0.12)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+              <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:18px;flex:1;min-width:0;padding-right:12px">{{ selectedBook.title }}</div>
+              <div onClick="{{ closeBookDetail }}" style="width:32px;height:32px;border-radius:50%;background:#EAF4FC;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#5B7185;flex-shrink:0">✕</div>
+            </div>
+            <sc-if value="{{ selectedBook.hasCover }}" hint-placeholder-val="{{ false }}">
+              <img src="{{ selectedBook.coverUrl }}" style="width:100%;height:160px;object-fit:cover;border-radius:14px;margin-bottom:14px;background:#EAF4FC"></img>
+            </sc-if>
+            <div style="font-size:13px;color:#5B7185;margin-bottom:10px">{{ selectedBook.author }}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
+              <div style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;background:{{ selectedBook.statusBg }};color:{{ selectedBook.statusColor }}">{{ selectedBook.statusLabel }}</div>
+              <div style="font-size:12px;color:#5B7185">{{ selectedBook.minutes }} min · {{ selectedBook.dateRange }}</div>
+            </div>
+
+            <div style="font-weight:700;font-size:14px;margin-bottom:12px">Summaries</div>
+            <sc-if value="{{ selectedBook.hasSummaries }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <sc-for list="{{ selectedBook.summaries }}" as="sm" hint-placeholder-count="2">
+                  <div style="background:#F5FAFE;border-radius:16px;padding:14px 16px">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                      <div style="display:flex;gap:4px">
+                        <sc-for list="{{ sm.dots }}" as="dot" hint-placeholder-count="5">
+                          <div style="font-size:12px;line-height:1;color:{{ dot.color }}">★</div>
+                        </sc-for>
+                      </div>
+                      <div style="font-size:12px;color:#5B7185">{{ sm.date }}</div>
+                    </div>
+                    <div style="font-size:13px;color:#5B7185;line-height:1.5">{{ sm.text }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ !selectedBook.hasSummaries }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:13px;color:#9AA7B2">No summaries written for this book yet.</div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
     </sc-if>
 
     <sc-if value="{{ screen==='badges' }}" hint-placeholder-val="{{ false }}">
@@ -993,6 +1034,7 @@ class Component extends DCLogic {
     badgeModalId: null,
     showConfettiBurst: false,
     selectedStudentId: null,
+    selectedBookId: null,
     teacherSearch: '',
     teacherSort: 'name'
   };
@@ -1554,7 +1596,20 @@ class Component extends DCLogic {
     let booksFiltered = this.bookCatalog.filter(b => s.bookFilter === 'all' || b.status === s.bookFilter);
     if (s.bookSort === 'title') booksFiltered = [...booksFiltered].sort((a, b) => a.title.localeCompare(b.title));
     if (s.bookSort === 'genre') booksFiltered = [...booksFiltered].sort((a, b) => a.genre.localeCompare(b.genre));
-    booksFiltered = booksFiltered.map(b => ({ ...b, statusBg: statusColors[b.status].bg, statusColor: statusColors[b.status].color, statusLabel: statusColors[b.status].label, hasCover: !!b.coverUrl }));
+    booksFiltered = booksFiltered.map(b => ({ ...b, statusBg: statusColors[b.status].bg, statusColor: statusColors[b.status].color, statusLabel: statusColors[b.status].label, hasCover: !!b.coverUrl, select: () => this.setState({ selectedBookId: b.id }) }));
+
+    const selectedBookRaw = this.bookCatalog.find(b => b.id === s.selectedBookId);
+    const selectedBookSummaries = selectedBookRaw
+      ? this.pastSummariesRaw
+        .filter(sm => sm.title.trim().toLowerCase() === selectedBookRaw.title.trim().toLowerCase())
+        .map(sm => ({ ...sm, dots: [1, 2, 3, 4, 5].map(n => ({ color: n <= sm.rating ? '#FFC933' : '#E3E8ED' })) }))
+      : [];
+    const selectedBook = selectedBookRaw ? {
+      ...selectedBookRaw,
+      hasCover: !!selectedBookRaw.coverUrl,
+      statusBg: statusColors[selectedBookRaw.status].bg, statusColor: statusColors[selectedBookRaw.status].color, statusLabel: statusColors[selectedBookRaw.status].label,
+      summaries: selectedBookSummaries, hasSummaries: selectedBookSummaries.length > 0
+    } : null;
 
     const ratingColors = ['#E3E8ED', '#EDE9FE', '#EDE9FE', '#8B7CF0', '#8B7CF0'];
     const ratingCircles = [1, 2, 3, 4, 5].map(n => ({ n, color: n <= s.summaryRating ? '#FFC933' : '#E3E8ED', select: () => this.setState({ summaryRating: n }) }));
@@ -1679,6 +1734,7 @@ class Component extends DCLogic {
       teacherSearch: s.teacherSearch, onTeacherSearch: (e) => this.setState({ teacherSearch: e.target.value }),
       teacherSort: s.teacherSort, onTeacherSort: (e) => this.setState({ teacherSort: e.target.value }),
       selectedStudent, closeStudent: () => this.setState({ selectedStudentId: null }),
+      selectedBook, closeBookDetail: () => this.setState({ selectedBookId: null }),
 
       authDone: s.authStage === 'app', isAuthRole: s.authStage === 'role', isAuthStudentForm: s.authStage === 'studentForm', isAuthTeacherForm: s.authStage === 'teacherForm', isAuthLoginForm: s.authStage === 'login',
       chooseStudentAuth: () => this.setState({ authStage: 'studentForm' }), chooseTeacherAuth: () => this.setState({ authStage: 'teacherForm' }),
