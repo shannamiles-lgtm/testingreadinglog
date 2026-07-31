@@ -387,7 +387,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
 
       <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
         <div onClick="{{ saveGoals }}" style="background:#2E5FA3;color:#fff;font-weight:700;font-size:15px;padding:16px;border-radius:16px;text-align:center;cursor:pointer;max-width:280px;flex:1;min-width:180px">Save my goals</div>
-        <div onClick="{{ resetGoalsToDefault }}" style="font-size:13px;font-weight:600;color:#9AA7B2;cursor:pointer">Reset to default (140 min/week · 15 books/year)</div>
+        <div onClick="{{ resetGoalsToDefault }}" style="font-size:13px;font-weight:600;color:#9AA7B2;cursor:pointer">Reset to default (140 min/week · 10 books/year)</div>
       </div>
     </sc-if>
 
@@ -1027,7 +1027,7 @@ class Component extends DCLogic {
     milestoneHit: false,
     justEarnedBadgeName: '',
     draftMinutesGoal: 140,
-    draftBooksGoal: 15,
+    draftBooksGoal: 10,
     bookFilter: 'all',
     bookSort: 'recent',
     summaryBookId: null,
@@ -1354,10 +1354,10 @@ class Component extends DCLogic {
     this._idCounter += 1;
     const studentId = this._idCounter;
     const nowIso = new Date().toISOString();
-    this.student = { name: displayName, initials, minutesGoal: 140, minutesCurrent: 0, booksGoal: 15, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso };
+    this.student = { name: displayName, initials, minutesGoal: 140, minutesCurrent: 0, booksGoal: 10, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso };
     this.resetStudentProgress();
     this.checkGoalPeriods();
-    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: 140, booksRead: 0, booksGoal: 15, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso }];
+    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: 140, booksRead: 0, booksGoal: 10, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso }];
     if (s.suUsername.trim()) this.accounts = [...this.accounts, { username: s.suUsername.trim(), password: s.suPassword, role: 'student', studentId, email: s.suEmail.trim() }];
     this.saveData();
     this.saveSession({ role: 'student', studentId, username: s.suUsername.trim() });
@@ -1742,10 +1742,10 @@ class Component extends DCLogic {
       },
       resetGoalsToDefault: () => {
         this.student.minutesGoal = 140;
-        this.student.booksGoal = 15;
+        this.student.booksGoal = 10;
         this.syncRosterEntry();
         this.saveData();
-        this.setState({ draftMinutesGoal: 140, draftBooksGoal: 15 });
+        this.setState({ draftMinutesGoal: 140, draftBooksGoal: 10 });
       },
       goGoalsFromAccount: () => {
         this.setState({ showAccountPanel: false, draftMinutesGoal: this.student.minutesGoal, draftBooksGoal: this.student.booksGoal });
