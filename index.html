@@ -78,6 +78,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
     <div onClick="{{ stopProp }}" style="background:#fff;border-radius:24px;padding:28px;max-width:340px;width:100%;box-shadow:0 8px 24px rgba(22,40,61,0.16)">
       <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:18px;margin-bottom:4px">{{ student.name }}</div>
       <div style="font-size:13px;color:#5B7185;margin-bottom:20px">Username: {{ student.username }}</div>
+      <div onClick="{{ goGoalsFromAccount }}" style="background:#2E5FA3;color:#fff;font-weight:700;font-size:14px;padding:12px;border-radius:12px;cursor:pointer;text-align:center;margin-bottom:16px">Reading goals</div>
       <div style="font-weight:700;font-size:13px;margin-bottom:10px">Export my progress</div>
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
         <div onClick="{{ exportStudentExcel }}" style="background:#EAF4FC;color:#2E5FA3;font-weight:700;font-size:14px;padding:12px;border-radius:12px;cursor:pointer;text-align:center">Export as Excel (.csv)</div>
@@ -356,17 +357,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
 
     <sc-if value="{{ screen==='goals' }}" hint-placeholder-val="{{ false }}">
       <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:26px;margin-bottom:6px">Set your goals</div>
-      <div style="color:#5B7185;font-size:14px;margin-bottom:24px">Choose a period, then pick targets that feel like a good stretch.</div>
-
-      <div style="background:#FFFFFF;border-radius:20px;padding:24px;box-shadow:0 2px 8px rgba(22,40,61,0.06);margin-bottom:20px">
-        <div style="font-weight:700;font-size:14px;margin-bottom:10px">Time period</div>
-        <select value="{{ goalPeriod }}" onChange="{{ onGoalPeriod }}" style="width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box">
-          <option value="marking">Marking Period</option>
-          <option value="semester">Semester</option>
-          <option value="month">This Month</option>
-          <option value="custom">Custom Date Range</option>
-        </select>
-      </div>
+      <div style="color:#5B7185;font-size:14px;margin-bottom:24px">Minutes reset every Sunday at 11:59pm. Books reset once a year, on your sign-up date.</div>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:20px">
         <div style="background:#FFFFFF;border-radius:20px;padding:24px;box-shadow:0 2px 8px rgba(22,40,61,0.06)">
@@ -376,7 +367,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
             <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:32px;min-width:90px;text-align:center">{{ draftMinutesGoal }}</div>
             <div onClick="{{ incMinutesGoal }}" style="width:40px;height:40px;border-radius:50%;background:#EAF4FC;display:flex;align-items:center;justify-content:center;font-size:20px;color:#2E5FA3;cursor:pointer;font-weight:700">+</div>
           </div>
-          <div style="text-align:center;color:#5B7185;font-size:13px;margin-top:8px">minutes</div>
+          <div style="text-align:center;color:#5B7185;font-size:13px;margin-top:8px">minutes per week</div>
         </div>
         <div style="background:#FFFFFF;border-radius:20px;padding:24px;box-shadow:0 2px 8px rgba(22,40,61,0.06)">
           <div style="font-weight:700;font-size:15px;margin-bottom:16px">My books goal</div>
@@ -385,16 +376,19 @@ body{margin:0;-webkit-font-smoothing:antialiased}
             <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:32px;min-width:90px;text-align:center">{{ draftBooksGoal }}</div>
             <div onClick="{{ incBooksGoal }}" style="width:40px;height:40px;border-radius:50%;background:#FFF6DC;display:flex;align-items:center;justify-content:center;font-size:20px;color:#F2AE00;cursor:pointer;font-weight:700">+</div>
           </div>
-          <div style="text-align:center;color:#5B7185;font-size:13px;margin-top:8px">books</div>
+          <div style="text-align:center;color:#5B7185;font-size:13px;margin-top:8px">books per year</div>
         </div>
       </div>
 
       <div style="background:#EAF4FC;border-radius:20px;padding:20px 24px;margin-bottom:24px">
-        <div style="font-weight:700;font-size:13px;color:#2E5FA3;margin-bottom:4px">Teacher-assigned goal, for comparison</div>
-        <div style="font-size:14px;color:#16283D">{{ teacherGoalMinutes }} minutes · {{ teacherGoalBooks }} books this period</div>
+        <div style="font-weight:700;font-size:13px;color:#2E5FA3;margin-bottom:4px">Teacher-assigned targets, for comparison</div>
+        <div style="font-size:14px;color:#16283D">{{ teacherGoalMinutes }} min/week · {{ teacherGoalBooks }} books/year</div>
       </div>
 
-      <div onClick="{{ saveGoals }}" style="background:#2E5FA3;color:#fff;font-weight:700;font-size:15px;padding:16px;border-radius:16px;text-align:center;cursor:pointer;max-width:280px">Save my goals</div>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <div onClick="{{ saveGoals }}" style="background:#2E5FA3;color:#fff;font-weight:700;font-size:15px;padding:16px;border-radius:16px;text-align:center;cursor:pointer;max-width:280px;flex:1;min-width:180px">Save my goals</div>
+        <div onClick="{{ resetGoalsToDefault }}" style="font-size:13px;font-weight:600;color:#9AA7B2;cursor:pointer">Reset to default (140 min/week · 15 books/year)</div>
+      </div>
     </sc-if>
 
     <sc-if value="{{ screen==='log' }}" hint-placeholder-val="{{ false }}">
@@ -1032,9 +1026,8 @@ class Component extends DCLogic {
     timerSeconds: 0,
     milestoneHit: false,
     justEarnedBadgeName: '',
-    goalPeriod: 'marking',
-    draftMinutesGoal: 600,
-    draftBooksGoal: 8,
+    draftMinutesGoal: 140,
+    draftBooksGoal: 15,
     bookFilter: 'all',
     bookSort: 'recent',
     summaryBookId: null,
@@ -1142,8 +1135,9 @@ class Component extends DCLogic {
     if (session && session.role === 'student') {
       const rec = this.rosterRaw.find(r => r.id === session.studentId);
       if (rec) {
-        this.student = { name: rec.name, initials: rec.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(), minutesGoal: rec.minutesGoal, minutesCurrent: rec.minutesRead, booksGoal: rec.booksGoal, booksCurrent: rec.booksRead, teacherId: rec.teacherId, classId: rec.classId, username: session.username, studentId: rec.id };
+        this.student = { name: rec.name, initials: rec.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(), minutesGoal: rec.minutesGoal, minutesCurrent: rec.minutesRead, booksGoal: rec.booksGoal, booksCurrent: rec.booksRead, teacherId: rec.teacherId, classId: rec.classId, username: session.username, studentId: rec.id, signupDate: rec.signupDate, minutesGoalPeriodStart: rec.minutesGoalPeriodStart, booksGoalPeriodStart: rec.booksGoalPeriodStart };
         this.resetStudentProgress();
+        this.checkGoalPeriods();
         this.setState({ authStage: 'app', role: 'student' });
         return;
       }
@@ -1175,7 +1169,7 @@ class Component extends DCLogic {
         }
       }
       if (parsed.teachers) this.teachers = parsed.teachers.map(t => ({ schoolName: '', ...t }));
-      if (parsed.rosterRaw) this.rosterRaw = parsed.rosterRaw.map(r => ({ firstName: '', lastName: '', username: '', ...r }));
+      if (parsed.rosterRaw) this.rosterRaw = parsed.rosterRaw.map(r => ({ firstName: '', lastName: '', username: '', signupDate: '', minutesGoalPeriodStart: '', booksGoalPeriodStart: '', ...r }));
       if (parsed.idCounter) this._idCounter = parsed.idCounter;
       if (parsed.schoolNames) this.schoolNames = parsed.schoolNames;
     } catch (e) {}
@@ -1267,6 +1261,46 @@ class Component extends DCLogic {
     this.badgeDefs = this.badgeDefs.map(b => ({ ...b, earned: false, progCurrent: 0, dateText: undefined }));
   }
 
+  // Most recent Sunday 11:59pm boundary at or before `now` -- the start of the current minutes-goal week.
+  mostRecentWeekBoundary(now) {
+    const d = new Date(now);
+    d.setHours(23, 59, 0, 0);
+    d.setDate(d.getDate() - d.getDay());
+    if (d > now) d.setDate(d.getDate() - 7);
+    return d;
+  }
+
+  // Most recent signup-date anniversary at or before `now` -- the start of the current books-goal year.
+  mostRecentAnniversary(signup, now) {
+    const d = new Date(signup);
+    d.setFullYear(now.getFullYear());
+    d.setHours(0, 0, 0, 0);
+    if (d > now) d.setFullYear(d.getFullYear() - 1);
+    return d;
+  }
+
+  checkGoalPeriods() {
+    const now = new Date();
+    let changed = false;
+    const weekBoundary = this.mostRecentWeekBoundary(now);
+    if (!this.student.minutesGoalPeriodStart || new Date(this.student.minutesGoalPeriodStart) < weekBoundary) {
+      this.student.minutesCurrent = 0;
+      this.student.minutesGoalPeriodStart = weekBoundary.toISOString();
+      changed = true;
+    }
+    const signup = this.student.signupDate ? new Date(this.student.signupDate) : now;
+    const yearBoundary = this.mostRecentAnniversary(signup, now);
+    if (!this.student.booksGoalPeriodStart || new Date(this.student.booksGoalPeriodStart) < yearBoundary) {
+      this.student.booksCurrent = 0;
+      this.student.booksGoalPeriodStart = yearBoundary.toISOString();
+      changed = true;
+    }
+    if (changed) {
+      this.syncRosterEntry();
+      this.saveData();
+    }
+  }
+
   formatLogDate(iso) {
     try { return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
     catch (e) { return iso; }
@@ -1301,7 +1335,11 @@ class Component extends DCLogic {
   syncRosterEntry() {
     if (!this.student.studentId) return;
     this.rosterRaw = this.rosterRaw.map(r => r.id === this.student.studentId
-      ? { ...r, minutesRead: this.student.minutesCurrent, booksRead: this.student.booksCurrent, badgesCount: this.badgeDefs.filter(b => b.earned).length }
+      ? {
+          ...r, minutesRead: this.student.minutesCurrent, booksRead: this.student.booksCurrent, badgesCount: this.badgeDefs.filter(b => b.earned).length,
+          minutesGoal: this.student.minutesGoal, booksGoal: this.student.booksGoal,
+          signupDate: this.student.signupDate, minutesGoalPeriodStart: this.student.minutesGoalPeriodStart, booksGoalPeriodStart: this.student.booksGoalPeriodStart
+        }
       : r);
   }
 
@@ -1315,9 +1353,11 @@ class Component extends DCLogic {
     const classId = s.suClassId || (isHomeschool ? 'homeschool' : (this.teachers.find(t => t.id === teacherId) || this.teachers[0]).classes[0].id);
     this._idCounter += 1;
     const studentId = this._idCounter;
-    this.student = { name: displayName, initials, minutesGoal: 600, minutesCurrent: 0, booksGoal: 8, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId };
+    const nowIso = new Date().toISOString();
+    this.student = { name: displayName, initials, minutesGoal: 140, minutesCurrent: 0, booksGoal: 15, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso };
     this.resetStudentProgress();
-    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: 600, booksRead: 0, booksGoal: 8, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId }];
+    this.checkGoalPeriods();
+    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: 140, booksRead: 0, booksGoal: 15, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso }];
     if (s.suUsername.trim()) this.accounts = [...this.accounts, { username: s.suUsername.trim(), password: s.suPassword, role: 'student', studentId, email: s.suEmail.trim() }];
     this.saveData();
     this.saveSession({ role: 'student', studentId, username: s.suUsername.trim() });
@@ -1394,8 +1434,9 @@ class Component extends DCLogic {
     if (!acc) { this.setState({ liError: 'Username or password not found.' }); return; }
     if (acc.role === 'student') {
       const rec = this.rosterRaw.find(r => r.id === acc.studentId);
-      this.student = { name: rec.name, initials: rec.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(), minutesGoal: rec.minutesGoal, minutesCurrent: rec.minutesRead, booksGoal: rec.booksGoal, booksCurrent: rec.booksRead, teacherId: rec.teacherId, classId: rec.classId, username: acc.username, studentId: rec.id };
+      this.student = { name: rec.name, initials: rec.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(), minutesGoal: rec.minutesGoal, minutesCurrent: rec.minutesRead, booksGoal: rec.booksGoal, booksCurrent: rec.booksRead, teacherId: rec.teacherId, classId: rec.classId, username: acc.username, studentId: rec.id, signupDate: rec.signupDate, minutesGoalPeriodStart: rec.minutesGoalPeriodStart, booksGoalPeriodStart: rec.booksGoalPeriodStart };
       this.resetStudentProgress();
+      this.checkGoalPeriods();
       this.saveSession({ role: 'student', studentId: acc.studentId, username: acc.username });
       this.setState({ authStage: 'app', role: 'student', liError: '' });
     } else {
@@ -1687,13 +1728,29 @@ class Component extends DCLogic {
       tabDashStyle: tabStyle(s.screen === 'dashboard'), tabLogStyle: tabStyle(s.screen === 'log'),
       tabBooksStyle: tabStyle(s.screen === 'books'), tabBadgesStyle: tabStyle(s.screen === 'badges'),
 
-      goalPeriod: s.goalPeriod, onGoalPeriod: (e) => this.setState({ goalPeriod: e.target.value }),
       draftMinutesGoal: s.draftMinutesGoal, draftBooksGoal: s.draftBooksGoal,
-      incMinutesGoal: () => this.setState(st => ({ draftMinutesGoal: st.draftMinutesGoal + 25 })),
-      decMinutesGoal: () => this.setState(st => ({ draftMinutesGoal: Math.max(25, st.draftMinutesGoal - 25) })),
+      incMinutesGoal: () => this.setState(st => ({ draftMinutesGoal: st.draftMinutesGoal + 10 })),
+      decMinutesGoal: () => this.setState(st => ({ draftMinutesGoal: Math.max(10, st.draftMinutesGoal - 10) })),
       incBooksGoal: () => this.setState(st => ({ draftBooksGoal: st.draftBooksGoal + 1 })),
       decBooksGoal: () => this.setState(st => ({ draftBooksGoal: Math.max(1, st.draftBooksGoal - 1) })),
-      saveGoals: () => { this.student.minutesGoal = s.draftMinutesGoal; this.student.booksGoal = s.draftBooksGoal; this.setScreen('dashboard'); },
+      saveGoals: () => {
+        this.student.minutesGoal = s.draftMinutesGoal;
+        this.student.booksGoal = s.draftBooksGoal;
+        this.syncRosterEntry();
+        this.saveData();
+        this.setScreen('dashboard');
+      },
+      resetGoalsToDefault: () => {
+        this.student.minutesGoal = 140;
+        this.student.booksGoal = 15;
+        this.syncRosterEntry();
+        this.saveData();
+        this.setState({ draftMinutesGoal: 140, draftBooksGoal: 15 });
+      },
+      goGoalsFromAccount: () => {
+        this.setState({ showAccountPanel: false, draftMinutesGoal: this.student.minutesGoal, draftBooksGoal: this.student.booksGoal });
+        this.setScreen('goals');
+      },
 
       logStep: s.logStep, bookSearch: s.bookSearch, onBookSearch: (e) => this.setState({ bookSearch: e.target.value }), bookResults,
       logSelectedBook: s.logSelectedBook, logMinutes: s.logMinutes,
