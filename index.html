@@ -1162,7 +1162,7 @@ class Component extends DCLogic {
   _coverSearchTimer = null;
   _coverReqId = 0;
   sessionsLogged = 0;
-  accounts = [{ username: 'admin', password: 'wildread2026', role: 'admin', email: 'admin@wildread.app' }];
+  accounts = [{ username: 'admin', password: 'readmore', role: 'admin', email: 'admin@wildread.app' }];
 
   streakRaw = [
     { label: 'M', minutes: 20 }, { label: 'T', minutes: 0 }, { label: 'W', minutes: 35 },
@@ -1276,7 +1276,7 @@ class Component extends DCLogic {
       if (parsed.accounts) {
         this.accounts = parsed.accounts;
         if (!this.accounts.some(a => a.role === 'admin')) {
-          this.accounts = [{ username: 'admin', password: 'wildread2026', role: 'admin', email: 'admin@wildread.app' }, ...this.accounts];
+          this.accounts = [{ username: 'admin', password: 'readmore', role: 'admin', email: 'admin@wildread.app' }, ...this.accounts];
         }
       }
       if (parsed.teachers) this.teachers = parsed.teachers.map(t => ({ schoolName: '', ...t }));
