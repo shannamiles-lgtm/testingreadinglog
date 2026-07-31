@@ -328,7 +328,8 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         <div style="display:flex;gap:20px;flex-wrap:wrap">
           <sc-for list="{{ recentBadgesView }}" as="b" hint-placeholder-count="3">
             <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:76px">
-              <div style="width:64px;height:64px;border-radius:50%;background:{{ b.circleColor }};display:flex;align-items:center;justify-content:center;position:relative">
+              <div style="width:64px;height:64px;border-radius:50%;background:{{ b.circleColor }};display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+                <sc-if value="{{ b.hasIconUrl }}" hint-placeholder-val="{{ false }}"><img src="{{ b.iconDataUrl }}" style="width:64px;height:64px;object-fit:cover;filter:{{ b.iconFilter }}"></img></sc-if>
                 <sc-if value="{{ b.isBook }}" hint-placeholder-val="{{ false }}"><div style="width:30px;height:24px;border:2.5px solid #fff;border-radius:4px;position:relative"><div style="position:absolute;top:0;left:50%;width:2px;height:100%;background:#fff"></div></div></sc-if>
                 <sc-if value="{{ b.isClock }}" hint-placeholder-val="{{ false }}"><div style="width:28px;height:28px;border-radius:50%;border:2.5px solid #fff;position:relative"><div style="position:absolute;top:50%;left:50%;width:9px;height:2px;background:#fff;transform:translate(-2px,-1px) rotate(-40deg);transform-origin:0 50%"></div><div style="position:absolute;top:50%;left:50%;width:6px;height:2px;background:#fff;transform:translate(-1px,0) rotate(40deg);transform-origin:0 50%"></div></div></sc-if>
                 <sc-if value="{{ b.isFlag }}" hint-placeholder-val="{{ false }}"><div style="width:3px;height:26px;background:#fff;border-radius:2px;position:relative"><div style="position:absolute;top:0;left:3px;width:0;height:0;border-top:8px solid #fff;border-right:10px solid transparent"></div></div></sc-if>
@@ -655,6 +656,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
             <sc-for list="{{ g.badges }}" as="b" hint-placeholder-count="3">
               <div onClick="{{ b.open }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer">
                 <div style="width:72px;height:72px;border-radius:50%;background:{{ b.circleColor }};display:flex;align-items:center;justify-content:center;position:relative">
+                  <sc-if value="{{ b.hasIconUrl }}" hint-placeholder-val="{{ false }}"><img src="{{ b.iconDataUrl }}" style="width:72px;height:72px;object-fit:cover;border-radius:50%;filter:{{ b.iconFilter }}"></img></sc-if>
                   <sc-if value="{{ b.isBook }}" hint-placeholder-val="{{ false }}"><div style="width:34px;height:26px;border:2.5px solid {{ b.iconColor }};border-radius:4px;position:relative"><div style="position:absolute;top:0;left:50%;width:2px;height:100%;background:{{ b.iconColor }}"></div></div></sc-if>
                   <sc-if value="{{ b.isClock }}" hint-placeholder-val="{{ false }}"><div style="width:32px;height:32px;border-radius:50%;border:2.5px solid {{ b.iconColor }};position:relative"><div style="position:absolute;top:50%;left:50%;width:10px;height:2px;background:{{ b.iconColor }};transform:translate(-2px,-1px) rotate(-40deg);transform-origin:0 50%"></div><div style="position:absolute;top:50%;left:50%;width:7px;height:2px;background:{{ b.iconColor }};transform:translate(-1px,0) rotate(40deg);transform-origin:0 50%"></div></div></sc-if>
                   <sc-if value="{{ b.isFlag }}" hint-placeholder-val="{{ false }}"><div style="width:3px;height:30px;background:{{ b.iconColor }};border-radius:2px;position:relative"><div style="position:absolute;top:0;left:3px;width:0;height:0;border-top:9px solid {{ b.iconColor }};border-right:12px solid transparent"></div></div></sc-if>
@@ -692,6 +694,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
       <div onClick="{{ closeBadge }}" style="position:fixed;inset:0;background:rgba(22,40,61,0.4);z-index:30;display:flex;align-items:center;justify-content:center;padding:20px">
         <div onClick="{{ stopProp }}" style="background:#fff;border-radius:24px;padding:32px;max-width:340px;text-align:center;box-shadow:0 8px 24px rgba(22,40,61,0.16)">
           <div style="width:88px;height:88px;border-radius:50%;background:{{ badgeModal.circleColor }};margin:0 auto 18px;display:flex;align-items:center;justify-content:center;animation:badgePop 0.5s ease-out">
+            <sc-if value="{{ badgeModal.hasIconUrl }}" hint-placeholder-val="{{ false }}"><img src="{{ badgeModal.iconDataUrl }}" style="width:88px;height:88px;object-fit:cover;border-radius:50%;filter:{{ badgeModal.iconFilter }}"></img></sc-if>
             <sc-if value="{{ badgeModal.isBook }}" hint-placeholder-val="{{ false }}"><div style="width:40px;height:32px;border:3px solid {{ badgeModal.iconColor }};border-radius:5px;position:relative"><div style="position:absolute;top:0;left:50%;width:3px;height:100%;background:{{ badgeModal.iconColor }}"></div></div></sc-if>
             <sc-if value="{{ badgeModal.isClock }}" hint-placeholder-val="{{ false }}"><div style="width:40px;height:40px;border-radius:50%;border:3px solid {{ badgeModal.iconColor }}"></div></sc-if>
             <sc-if value="{{ badgeModal.isFlag }}" hint-placeholder-val="{{ false }}"><div style="width:4px;height:36px;background:{{ badgeModal.iconColor }};border-radius:2px"></div></sc-if>
@@ -970,6 +973,53 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         <div style="font-size:13px;color:#9AA7B2;padding:8px 12px">No schools yet.</div>
       </sc-if>
     </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:20px;box-shadow:0 2px 8px rgba(22,40,61,0.06);margin-top:20px">
+      <div style="font-weight:700;font-size:15px;margin-bottom:16px">Badges</div>
+
+      <sc-if value="{{ hasAdminCustomBadges }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:20px">
+          <sc-for list="{{ adminCustomBadges }}" as="cb" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:12px;border-top:1px solid #F5FAFE">
+              <div style="display:flex;align-items:center;gap:12px">
+                <img src="{{ cb.iconDataUrl }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0"></img>
+                <div>
+                  <div style="font-size:13px;font-weight:600">{{ cb.name }}</div>
+                  <div style="font-size:12px;color:#5B7185">{{ cb.minutesThreshold }} min / {{ cb.periodLabel }}</div>
+                </div>
+              </div>
+              <div onClick="{{ cb.deleteIt }}" style="font-size:12px;font-weight:700;color:#C0392B;cursor:pointer">Delete</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ !hasAdminCustomBadges }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:13px;color:#9AA7B2;padding:8px 12px;margin-bottom:16px">No custom badges yet.</div>
+      </sc-if>
+
+      <div style="border-top:1px solid #F5FAFE;padding-top:16px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:10px">Add a badge</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <sc-if value="{{ hasNewBadgeIcon }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ newBadgeIconDataUrl }}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0"></img>
+          </sc-if>
+          <input type="file" accept="image/*" onChange="{{ onBadgeIconFile }}" style="font-size:13px;flex:1"></input>
+        </div>
+        <input value="{{ newBadgeName }}" onInput="{{ onNewBadgeName }}" placeholder="Badge name" style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #D3E7F7;font-size:13px;font-family:'Inter',sans-serif;box-sizing:border-box;margin-bottom:10px"></input>
+        <div style="display:flex;gap:10px;margin-bottom:10px">
+          <select value="{{ newBadgePeriod }}" onChange="{{ onNewBadgePeriod }}" style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid #D3E7F7;font-size:13px;font-family:'Inter',sans-serif;background:#fff">
+            <option value="weekly">Per week</option>
+            <option value="monthly">Per month</option>
+            <option value="yearly">Per year</option>
+          </select>
+          <input type="number" min="1" value="{{ newBadgeMinutes }}" onInput="{{ onNewBadgeMinutes }}" placeholder="Minutes" style="width:110px;padding:10px 12px;border-radius:10px;border:1.5px solid #D3E7F7;font-size:13px;font-family:'Inter',sans-serif;box-sizing:border-box"></input>
+        </div>
+        <sc-if value="{{ hasNewBadgeError }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:12px;color:#C0392B;margin-bottom:10px">{{ newBadgeError }}</div>
+        </sc-if>
+        <div onClick="{{ addCustomBadge }}" style="background:#2E5FA3;color:#fff;font-weight:700;font-size:13px;padding:11px;border-radius:12px;cursor:pointer;text-align:center">Add badge</div>
+      </div>
+    </div>
   </div>
 </div>
 </sc-if>
@@ -1005,6 +1055,7 @@ class Component extends DCLogic {
     adminUsername: '', adminPassword: '', adminError: '',
     fpIdentifier: '', fpNewPassword: '', fpStage: 'enter', fpError: '', fpFoundUsername: '',
     adminEditingUsername: null, adminEditValue: '',
+    newBadgeName: '', newBadgeIconDataUrl: '', newBadgeIconName: '', newBadgePeriod: 'weekly', newBadgeMinutes: 100, newBadgeError: '',
     currentTeacherId: 't1', selectedClassId: 'c1', showAccountPanel: false, confirmingDeleteAccount: false,
     role: null,
     screen: 'dashboard',
@@ -1048,6 +1099,7 @@ class Component extends DCLogic {
   schoolYearOptions = ['2025-2026', '2026-2027', '2027-2028'];
   schoolNames = ['Lincoln Middle School', 'Roosevelt Middle School'];
   noSchoolLabel = 'Homeschool / No school';
+  customBadges = [];
   teachers = [
     { id: 't1', name: 'Ms. Karen Carpenter', schoolName: 'Lincoln Middle School', schoolYear: '2026-2027', classes: [{ id: 'c1', period: '1st Period' }, { id: 'c2', period: '3rd Period' }] },
     { id: 't2', name: 'Mr. James Alvarez', schoolName: 'Roosevelt Middle School', schoolYear: '2026-2027', classes: [{ id: 'c3', period: '2nd Period' }] }
@@ -1135,7 +1187,7 @@ class Component extends DCLogic {
     if (session && session.role === 'student') {
       const rec = this.rosterRaw.find(r => r.id === session.studentId);
       if (rec) {
-        this.student = { name: rec.name, initials: rec.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(), minutesGoal: rec.minutesGoal, minutesCurrent: rec.minutesRead, booksGoal: rec.booksGoal, booksCurrent: rec.booksRead, teacherId: rec.teacherId, classId: rec.classId, username: session.username, studentId: rec.id, signupDate: rec.signupDate, minutesGoalPeriodStart: rec.minutesGoalPeriodStart, booksGoalPeriodStart: rec.booksGoalPeriodStart };
+        this.student = { name: rec.name, initials: rec.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(), minutesGoal: rec.minutesGoal, minutesCurrent: rec.minutesRead, booksGoal: rec.booksGoal, booksCurrent: rec.booksRead, teacherId: rec.teacherId, classId: rec.classId, username: session.username, studentId: rec.id, signupDate: rec.signupDate, minutesGoalPeriodStart: rec.minutesGoalPeriodStart, booksGoalPeriodStart: rec.booksGoalPeriodStart, monthlyMinutesTotal: rec.monthlyMinutesTotal || 0, monthlyPeriodStart: rec.monthlyPeriodStart, yearlyMinutesTotal: rec.yearlyMinutesTotal || 0, yearlyPeriodStart: rec.yearlyPeriodStart };
         this.resetStudentProgress();
         this.checkGoalPeriods();
         this.setState({ authStage: 'app', role: 'student' });
@@ -1153,7 +1205,7 @@ class Component extends DCLogic {
 
   saveData() {
     try {
-      localStorage.setItem('wildread_data', JSON.stringify({ accounts: this.accounts, teachers: this.teachers, rosterRaw: this.rosterRaw, idCounter: this._idCounter, schoolNames: this.schoolNames }));
+      localStorage.setItem('wildread_data', JSON.stringify({ accounts: this.accounts, teachers: this.teachers, rosterRaw: this.rosterRaw, idCounter: this._idCounter, schoolNames: this.schoolNames, customBadges: this.customBadges }));
     } catch (e) {}
   }
 
@@ -1169,9 +1221,10 @@ class Component extends DCLogic {
         }
       }
       if (parsed.teachers) this.teachers = parsed.teachers.map(t => ({ schoolName: '', ...t }));
-      if (parsed.rosterRaw) this.rosterRaw = parsed.rosterRaw.map(r => ({ firstName: '', lastName: '', username: '', signupDate: '', minutesGoalPeriodStart: '', booksGoalPeriodStart: '', ...r }));
+      if (parsed.rosterRaw) this.rosterRaw = parsed.rosterRaw.map(r => ({ firstName: '', lastName: '', username: '', signupDate: '', minutesGoalPeriodStart: '', booksGoalPeriodStart: '', monthlyMinutesTotal: 0, monthlyPeriodStart: '', yearlyMinutesTotal: 0, yearlyPeriodStart: '', ...r }));
       if (parsed.idCounter) this._idCounter = parsed.idCounter;
       if (parsed.schoolNames) this.schoolNames = parsed.schoolNames;
+      if (Array.isArray(parsed.customBadges)) this.customBadges = parsed.customBadges;
     } catch (e) {}
   }
 
@@ -1246,6 +1299,40 @@ class Component extends DCLogic {
     this.saveData();
     this.forceUpdate();
   }
+
+  onBadgeIconFile(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { this.setState({ newBadgeError: 'Please choose an image file.' }); return; }
+    if (file.size > 1500000) { this.setState({ newBadgeError: 'Image is too large (max 1.5MB).' }); return; }
+    const reader = new FileReader();
+    reader.onload = () => { this.setState({ newBadgeIconDataUrl: reader.result, newBadgeIconName: file.name, newBadgeError: '' }); };
+    reader.onerror = () => { this.setState({ newBadgeError: "Couldn't read that file." }); };
+    reader.readAsDataURL(file);
+  }
+
+  addCustomBadge() {
+    const s = this.state;
+    const name = s.newBadgeName.trim();
+    if (!name) { this.setState({ newBadgeError: 'Give the badge a name.' }); return; }
+    if (!s.newBadgeIconDataUrl) { this.setState({ newBadgeError: 'Upload a badge icon.' }); return; }
+    const minutes = Math.max(1, Math.round(Number(s.newBadgeMinutes) || 0));
+    this._idCounter += 1;
+    this.customBadges = [...this.customBadges, {
+      id: 'custom-' + this._idCounter,
+      name, iconDataUrl: s.newBadgeIconDataUrl, period: s.newBadgePeriod, minutesThreshold: minutes,
+      earned: false, progCurrent: 0, dateText: undefined
+    }];
+    this.saveData();
+    this.setState({ newBadgeName: '', newBadgeIconDataUrl: '', newBadgeIconName: '', newBadgePeriod: 'weekly', newBadgeMinutes: 100, newBadgeError: '' });
+  }
+
+  deleteCustomBadge(id) {
+    this.customBadges = this.customBadges.filter(b => b.id !== id);
+    this.saveData();
+    this.forceUpdate();
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this._resize);
     if (this._timerId) clearInterval(this._timerId);
@@ -1259,6 +1346,7 @@ class Component extends DCLogic {
     this.sessionsLogged = 0;
     this.streakRaw = this.streakRaw.map(d => ({ ...d, minutes: 0 }));
     this.badgeDefs = this.badgeDefs.map(b => ({ ...b, earned: false, progCurrent: 0, dateText: undefined }));
+    this.customBadges = this.customBadges.map(b => ({ ...b, earned: false, progCurrent: 0, dateText: undefined }));
   }
 
   // Most recent Sunday 11:59pm boundary at or before `now` -- the start of the current minutes-goal week.
@@ -1279,26 +1367,43 @@ class Component extends DCLogic {
     return d;
   }
 
+  // Most recent 1st-of-month midnight at or before `now` -- the start of the current month, for monthly custom badges.
+  mostRecentMonthBoundary(now) {
+    const d = new Date(now);
+    d.setDate(1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
   checkGoalPeriods() {
     const now = new Date();
-    let changed = false;
     const weekBoundary = this.mostRecentWeekBoundary(now);
     if (!this.student.minutesGoalPeriodStart || new Date(this.student.minutesGoalPeriodStart) < weekBoundary) {
       this.student.minutesCurrent = 0;
       this.student.minutesGoalPeriodStart = weekBoundary.toISOString();
-      changed = true;
     }
     const signup = this.student.signupDate ? new Date(this.student.signupDate) : now;
     const yearBoundary = this.mostRecentAnniversary(signup, now);
     if (!this.student.booksGoalPeriodStart || new Date(this.student.booksGoalPeriodStart) < yearBoundary) {
       this.student.booksCurrent = 0;
       this.student.booksGoalPeriodStart = yearBoundary.toISOString();
-      changed = true;
     }
-    if (changed) {
-      this.syncRosterEntry();
-      this.saveData();
+    const monthBoundary = this.mostRecentMonthBoundary(now);
+    if (!this.student.monthlyPeriodStart || new Date(this.student.monthlyPeriodStart) < monthBoundary) {
+      this.student.monthlyMinutesTotal = 0;
+      this.student.monthlyPeriodStart = monthBoundary.toISOString();
     }
+    const minutesYearBoundary = this.mostRecentAnniversary(signup, now);
+    if (!this.student.yearlyPeriodStart || new Date(this.student.yearlyPeriodStart) < minutesYearBoundary) {
+      this.student.yearlyMinutesTotal = 0;
+      this.student.yearlyPeriodStart = minutesYearBoundary.toISOString();
+    }
+    // Re-sync earned badges against the still-persisted period totals -- resetStudentProgress()
+    // always wipes earned state right before this runs, so without this a badge already earned
+    // (e.g. minutes-based) would show locked again until the next log/summary action.
+    this.recomputeBadges();
+    this.syncRosterEntry();
+    this.saveData();
   }
 
   formatLogDate(iso) {
@@ -1329,6 +1434,16 @@ class Component extends DCLogic {
       if (earned && !wasEarned) newlyEarned.push(b.name);
       return { ...b, progCurrent: Math.min(stats[b.id], b.progTarget), earned, dateText: earned ? (wasEarned ? b.dateText : 'Today') : undefined };
     });
+
+    const periodTotals = { weekly: this.student.minutesCurrent, monthly: this.student.monthlyMinutesTotal || 0, yearly: this.student.yearlyMinutesTotal || 0 };
+    this.customBadges = this.customBadges.map(cb => {
+      const current = periodTotals[cb.period] || 0;
+      const wasEarned = cb.earned;
+      const earned = current >= cb.minutesThreshold;
+      if (earned && !wasEarned) newlyEarned.push(cb.name);
+      return { ...cb, progCurrent: Math.min(current, cb.minutesThreshold), earned, dateText: earned ? (wasEarned ? cb.dateText : 'Today') : undefined };
+    });
+
     return newlyEarned;
   }
 
@@ -1336,9 +1451,12 @@ class Component extends DCLogic {
     if (!this.student.studentId) return;
     this.rosterRaw = this.rosterRaw.map(r => r.id === this.student.studentId
       ? {
-          ...r, minutesRead: this.student.minutesCurrent, booksRead: this.student.booksCurrent, badgesCount: this.badgeDefs.filter(b => b.earned).length,
+          ...r, minutesRead: this.student.minutesCurrent, booksRead: this.student.booksCurrent,
+          badgesCount: this.badgeDefs.filter(b => b.earned).length + this.customBadges.filter(b => b.earned).length,
           minutesGoal: this.student.minutesGoal, booksGoal: this.student.booksGoal,
-          signupDate: this.student.signupDate, minutesGoalPeriodStart: this.student.minutesGoalPeriodStart, booksGoalPeriodStart: this.student.booksGoalPeriodStart
+          signupDate: this.student.signupDate, minutesGoalPeriodStart: this.student.minutesGoalPeriodStart, booksGoalPeriodStart: this.student.booksGoalPeriodStart,
+          monthlyMinutesTotal: this.student.monthlyMinutesTotal, monthlyPeriodStart: this.student.monthlyPeriodStart,
+          yearlyMinutesTotal: this.student.yearlyMinutesTotal, yearlyPeriodStart: this.student.yearlyPeriodStart
         }
       : r);
   }
@@ -1354,10 +1472,10 @@ class Component extends DCLogic {
     this._idCounter += 1;
     const studentId = this._idCounter;
     const nowIso = new Date().toISOString();
-    this.student = { name: displayName, initials, minutesGoal: 140, minutesCurrent: 0, booksGoal: 10, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso };
+    this.student = { name: displayName, initials, minutesGoal: 140, minutesCurrent: 0, booksGoal: 10, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso, monthlyMinutesTotal: 0, monthlyPeriodStart: nowIso, yearlyMinutesTotal: 0, yearlyPeriodStart: nowIso };
     this.resetStudentProgress();
     this.checkGoalPeriods();
-    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: 140, booksRead: 0, booksGoal: 10, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso }];
+    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: 140, booksRead: 0, booksGoal: 10, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso, monthlyMinutesTotal: 0, monthlyPeriodStart: nowIso, yearlyMinutesTotal: 0, yearlyPeriodStart: nowIso }];
     if (s.suUsername.trim()) this.accounts = [...this.accounts, { username: s.suUsername.trim(), password: s.suPassword, role: 'student', studentId, email: s.suEmail.trim() }];
     this.saveData();
     this.saveSession({ role: 'student', studentId, username: s.suUsername.trim() });
@@ -1434,7 +1552,7 @@ class Component extends DCLogic {
     if (!acc) { this.setState({ liError: 'Username or password not found.' }); return; }
     if (acc.role === 'student') {
       const rec = this.rosterRaw.find(r => r.id === acc.studentId);
-      this.student = { name: rec.name, initials: rec.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(), minutesGoal: rec.minutesGoal, minutesCurrent: rec.minutesRead, booksGoal: rec.booksGoal, booksCurrent: rec.booksRead, teacherId: rec.teacherId, classId: rec.classId, username: acc.username, studentId: rec.id, signupDate: rec.signupDate, minutesGoalPeriodStart: rec.minutesGoalPeriodStart, booksGoalPeriodStart: rec.booksGoalPeriodStart };
+      this.student = { name: rec.name, initials: rec.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(), minutesGoal: rec.minutesGoal, minutesCurrent: rec.minutesRead, booksGoal: rec.booksGoal, booksCurrent: rec.booksRead, teacherId: rec.teacherId, classId: rec.classId, username: acc.username, studentId: rec.id, signupDate: rec.signupDate, minutesGoalPeriodStart: rec.minutesGoalPeriodStart, booksGoalPeriodStart: rec.booksGoalPeriodStart, monthlyMinutesTotal: rec.monthlyMinutesTotal || 0, monthlyPeriodStart: rec.monthlyPeriodStart, yearlyMinutesTotal: rec.yearlyMinutesTotal || 0, yearlyPeriodStart: rec.yearlyPeriodStart };
       this.resetStudentProgress();
       this.checkGoalPeriods();
       this.saveSession({ role: 'student', studentId: acc.studentId, username: acc.username });
@@ -1557,6 +1675,8 @@ class Component extends DCLogic {
 
     this.sessionsLogged += 1;
     this.student.minutesCurrent += s.logMinutes;
+    this.student.monthlyMinutesTotal = (this.student.monthlyMinutesTotal || 0) + s.logMinutes;
+    this.student.yearlyMinutesTotal = (this.student.yearlyMinutesTotal || 0) + s.logMinutes;
     if (newlyFinished) this.student.booksCurrent += 1;
     this.streakRaw = this.streakRaw.map((d, i) => i === this.streakRaw.length - 1 ? { ...d, minutes: d.minutes + s.logMinutes } : d);
 
@@ -1627,14 +1747,39 @@ class Component extends DCLogic {
       };
     };
 
+    const periodLabels = { weekly: 'this week', monthly: 'this month', yearly: 'this year' };
+    const buildCustomBadgeView = (cb) => {
+      const locked = !cb.earned;
+      const periodLabel = periodLabels[cb.period] || 'this week';
+      const statusText = cb.earned ? `Earned ${cb.dateText}` : `${cb.progCurrent}/${cb.minutesThreshold} min ${periodLabel}`;
+      return {
+        ...cb, locked, hasIconUrl: true,
+        circleColor: locked ? '#E3E8ED' : '#2E5FA3',
+        iconFilter: locked ? 'grayscale(1) opacity(0.6)' : 'none',
+        labelColor: locked ? '#9AA7B2' : '#16283D',
+        statusColor: cb.earned ? '#2E5FA3' : '#5B7185',
+        statusText, shortDesc: `${cb.minutesThreshold} min ${periodLabel}`,
+        description: `Read ${cb.minutesThreshold} minutes ${periodLabel} to earn this badge.`,
+        open: () => { this.setState({ badgeModalId: cb.id }); if (cb.earned) this.burstConfetti(); }
+      };
+    };
+
     const badgeGroups = this.categories.map((c, ci) => ({
       name: c.name, color: c.color,
       badges: this.badgeDefs.filter(b => b.cat === ci).map(buildBadgeView)
     }));
+    if (this.customBadges.length > 0) {
+      badgeGroups.push({ name: 'Custom Badges', color: '#2E5FA3', badges: this.customBadges.map(buildCustomBadgeView) });
+    }
 
-    const badgeModal = s.badgeModalId ? buildBadgeView(this.badgeDefs.find(b => b.id === s.badgeModalId)) : null;
+    const builtinModalBadge = this.badgeDefs.find(b => b.id === s.badgeModalId);
+    const customModalBadge = this.customBadges.find(b => b.id === s.badgeModalId);
+    const badgeModal = builtinModalBadge ? buildBadgeView(builtinModalBadge) : (customModalBadge ? buildCustomBadgeView(customModalBadge) : null);
 
-    const recentBadgesView = this.badgeDefs.filter(b => b.earned).slice(0, 3).map(buildBadgeView);
+    const recentBadgesView = [
+      ...this.badgeDefs.filter(b => b.earned).map(buildBadgeView),
+      ...this.customBadges.filter(b => b.earned).map(buildCustomBadgeView)
+    ].slice(0, 3);
 
     const bookResults = this.bookCatalog
       .filter(b => b.title.toLowerCase().includes(s.bookSearch.toLowerCase()))
@@ -1711,7 +1856,9 @@ class Component extends DCLogic {
       encouragement: minutesPct >= 90 || booksPct >= 90 ? "You're so close to your goal!" : "You're building a great habit — keep going!",
       minutesArc: Math.round(minutesPct / 100 * 360), booksArc: Math.round(booksPct / 100 * 360), minutesPct, booksPct,
       streakView,
-      badgeGroups, badgeModal, recentBadgesView, earnedCount: this.badgeDefs.filter(b => b.earned).length, totalBadges: this.badgeDefs.length,
+      badgeGroups, badgeModal, recentBadgesView,
+      earnedCount: this.badgeDefs.filter(b => b.earned).length + this.customBadges.filter(b => b.earned).length,
+      totalBadges: this.badgeDefs.length + this.customBadges.length,
       showConfettiBurst: s.showConfettiBurst, confetti: this.confetti,
       closeBadge: () => this.setState({ badgeModalId: null }),
       stopProp: (e) => this.stopProp(e),
@@ -1854,6 +2001,18 @@ class Component extends DCLogic {
       }),
       adminSchools: this.schoolNames.map(name => ({ name, deleteIt: () => this.deleteSchoolName(name) })),
       hasAdminSchools: this.schoolNames.length > 0,
+      adminCustomBadges: this.customBadges.map(cb => ({
+        ...cb, periodLabel: cb.period === 'weekly' ? 'week' : cb.period === 'monthly' ? 'month' : 'year',
+        deleteIt: () => this.deleteCustomBadge(cb.id)
+      })),
+      hasAdminCustomBadges: this.customBadges.length > 0,
+      newBadgeName: s.newBadgeName, onNewBadgeName: (e) => this.setState({ newBadgeName: e.target.value }),
+      newBadgeIconDataUrl: s.newBadgeIconDataUrl, newBadgeIconName: s.newBadgeIconName, hasNewBadgeIcon: !!s.newBadgeIconDataUrl,
+      onBadgeIconFile: (e) => this.onBadgeIconFile(e),
+      newBadgePeriod: s.newBadgePeriod, onNewBadgePeriod: (e) => this.setState({ newBadgePeriod: e.target.value }),
+      newBadgeMinutes: s.newBadgeMinutes, onNewBadgeMinutes: (e) => this.setState({ newBadgeMinutes: e.target.value }),
+      newBadgeError: s.newBadgeError, hasNewBadgeError: !!s.newBadgeError,
+      addCustomBadge: () => this.addCustomBadge(),
       schoolYearOptions: this.schoolYearOptions,
       schoolOptions: [...this.schoolNames, this.noSchoolLabel],
       teacherOptions: this.teachers.filter(t => t.schoolName === s.suSchoolName).map(t => ({ id: t.id, name: t.name })),
