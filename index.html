@@ -130,6 +130,9 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         <div style="color:#5B7185;font-size:15px;margin-top:4px">{{ currentTeacher.schoolYear }} · {{ roster.length }} students</div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <sc-if value="{{ adminViewingMyClasses }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ backToAdminFromTeacher }}" style="background:#16283D;color:#fff;font-weight:700;font-size:13px;padding:10px 16px;border-radius:12px;cursor:pointer">← Back to Admin</div>
+        </sc-if>
         <select value="{{ selectedClassId }}" onChange="{{ onSelectClass }}" style="padding:10px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:13px;font-family:'Inter',sans-serif;background:#fff">
           <sc-for list="{{ currentTeacher.classes }}" as="cl" hint-placeholder-count="2">
             <option value="{{ cl.id }}">{{ cl.period }}</option>
@@ -930,6 +933,55 @@ body{margin:0;-webkit-font-smoothing:antialiased}
       <div onClick="{{ logout }}" style="color:#C0392B;font-weight:700;font-size:13px;cursor:pointer">Log out</div>
     </div>
 
+    <div style="background:#FFFFFF;border-radius:20px;padding:20px;box-shadow:0 2px 8px rgba(22,40,61,0.06);margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <div style="font-weight:700;font-size:15px">School data</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <select value="{{ adminSelectedSchool }}" onChange="{{ onAdminSelectedSchool }}" style="padding:10px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:13px;font-family:'Inter',sans-serif;background:#fff">
+            <sc-for list="{{ adminSchoolOptions }}" as="sch" hint-placeholder-count="2">
+              <option value="{{ sch }}">{{ sch }}</option>
+            </sc-for>
+          </select>
+          <sc-if value="{{ hasAdminTeacherId }}" hint-placeholder-val="{{ false }}">
+            <div onClick="{{ goMyClassesFromAdmin }}" style="background:#EAF4FC;color:#2E5FA3;font-weight:700;font-size:13px;padding:10px 16px;border-radius:12px;cursor:pointer">My Classes</div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+        <input value="{{ adminRosterSearch }}" onInput="{{ onAdminRosterSearch }}" placeholder="Search students…" style="flex:1;min-width:180px;padding:10px 16px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;outline:none"></input>
+        <select value="{{ adminRosterSort }}" onChange="{{ onAdminRosterSort }}" style="padding:10px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff">
+          <option value="name">Sort: Name</option>
+          <option value="minutes">Sort: Minutes</option>
+          <option value="books">Sort: Books</option>
+          <option value="goal">Sort: Goal %</option>
+        </select>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.6fr 1.2fr 0.9fr 0.9fr 0.9fr 0.8fr 0.8fr;padding:0 12px 10px;font-size:11px;font-weight:700;color:#9AA7B2;text-transform:uppercase;letter-spacing:0.04em">
+        <div>Student</div><div>Teacher</div><div>Class</div><div>Minutes</div><div>Books</div><div>Goal %</div><div>Badges</div>
+      </div>
+      <sc-if value="{{ hasAdminSchoolRoster }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ adminSchoolRoster }}" as="r" hint-placeholder-count="6">
+          <div style="display:grid;grid-template-columns:1.6fr 1.2fr 0.9fr 0.9fr 0.9fr 0.8fr 0.8fr;align-items:center;padding:10px 12px;border-radius:12px;border-top:1px solid #F5FAFE">
+            <div>
+              <div style="font-size:13px;font-weight:600">{{ r.name }}</div>
+              <div style="font-size:12px;color:#9AA7B2">{{ r.username }}</div>
+            </div>
+            <div style="font-size:13px;color:#5B7185">{{ r.teacherName }}</div>
+            <div style="font-size:13px;color:#5B7185">{{ r.classPeriod }}</div>
+            <div style="font-size:13px;color:#5B7185">{{ r.minutesRead }} / {{ r.minutesGoal }}</div>
+            <div style="font-size:13px;color:#5B7185">{{ r.booksRead }} / {{ r.booksGoal }}</div>
+            <div style="font-size:13px;font-weight:700;color:#2E5FA3">{{ r.pct }}%</div>
+            <div style="font-size:13px;color:#5B7185">{{ r.badgesCount }}</div>
+          </div>
+        </sc-for>
+      </sc-if>
+      <sc-if value="{{ !hasAdminSchoolRoster }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:13px;color:#9AA7B2;padding:12px">No students enrolled at this school yet.</div>
+      </sc-if>
+    </div>
+
     <div style="background:#FFFFFF;border-radius:20px;padding:20px;box-shadow:0 2px 8px rgba(22,40,61,0.06)">
       <div style="font-weight:700;font-size:15px;margin-bottom:16px">All accounts</div>
       <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 0.8fr 1.4fr;padding:0 12px 10px;font-size:11px;font-weight:700;color:#9AA7B2;text-transform:uppercase;letter-spacing:0.04em">
@@ -1052,7 +1104,8 @@ class Component extends DCLogic {
     suFirstName: '', suLastName: '', suSchoolYear: '2026-2027', suSchoolName: '', suTeacherId: '', suClassId: '', suUsername: '', suPassword: '', suEmail: '',
     tuName: '', tuSchoolName: '', tuSchoolYear: '2026-2027', tuNewPeriod: '', tuClassesDraft: [], tuUsername: '', tuPassword: '', tuEmail: '', tuAdminCode: '',
     liUsername: '', liPassword: '', liError: '',
-    adminUsername: '', adminPassword: '', adminError: '',
+    adminUsername: '', adminPassword: '', adminError: '', currentAdminUsername: null, adminSelectedSchool: '', adminViewingMyClasses: false,
+    adminRosterSearch: '', adminRosterSort: 'name',
     fpIdentifier: '', fpNewPassword: '', fpStage: 'enter', fpError: '', fpFoundUsername: '',
     adminEditingUsername: null, adminEditValue: '',
     newBadgeName: '', newBadgeIconDataUrl: '', newBadgeIconName: '', newBadgePeriod: 'weekly', newBadgeMinutes: 100, newBadgeError: '',
@@ -1199,6 +1252,12 @@ class Component extends DCLogic {
         this.setState({ authStage: 'app', role: 'teacher', currentTeacherId: t.id, selectedClassId: t.classes[0].id });
         return;
       }
+    } else if (session && session.role === 'admin') {
+      const acc = this.accounts.find(a => a.role === 'admin' && a.username === session.username);
+      if (acc) {
+        this.setState({ authStage: 'admin', currentAdminUsername: acc.username, adminSelectedSchool: acc.schoolName || '' });
+        return;
+      }
     }
     this.setState({ role: this.props.defaultRole === 'teacher' ? 'teacher' : 'student' });
   }
@@ -1265,7 +1324,8 @@ class Component extends DCLogic {
     const s = this.state;
     const acc = this.accounts.find(a => a.role === 'admin' && a.username === s.adminUsername.trim() && a.password === s.adminPassword);
     if (!acc) { this.setState({ adminError: 'Incorrect admin username or password.' }); return; }
-    this.setState({ authStage: 'admin', adminError: '' });
+    this.saveSession({ role: 'admin', username: acc.username });
+    this.setState({ authStage: 'admin', adminError: '', currentAdminUsername: acc.username, adminSelectedSchool: acc.schoolName || '' });
   }
 
   submitFindAccount() {
@@ -1587,7 +1647,7 @@ class Component extends DCLogic {
     }
     if (s.tuUsername.trim()) this.accounts = [...this.accounts, { username: s.tuUsername.trim(), password: s.tuPassword, role: 'teacher', teacherId, email: s.tuEmail.trim() }];
     if (s.tuAdminCode.trim().toLowerCase() === 'readmore' && s.tuUsername.trim()) {
-      this.accounts = [...this.accounts, { username: s.tuUsername.trim(), password: s.tuPassword, role: 'admin', email: s.tuEmail.trim() }];
+      this.accounts = [...this.accounts, { username: s.tuUsername.trim(), password: s.tuPassword, role: 'admin', email: s.tuEmail.trim(), teacherId, schoolName }];
     }
     this.saveData();
     this.saveSession({ role: 'teacher', teacherId });
@@ -1837,6 +1897,24 @@ class Component extends DCLogic {
     const rosterBars = rosterForClass.map(r => ({ name: r.name, pct: pctOf(r), barWidth: `${Math.min(100, pctOf(r))}%` }));
     const classAvgPct = rosterForClass.length ? Math.round(rosterForClass.reduce((sum, r) => sum + pctOf(r), 0) / rosterForClass.length) : 0;
 
+    const loggedInAdminAcc = this.accounts.find(a => a.role === 'admin' && a.username === s.currentAdminUsername);
+    const hasAdminTeacherId = !!(loggedInAdminAcc && loggedInAdminAcc.teacherId);
+    const adminSelectedSchool = s.adminSelectedSchool || (loggedInAdminAcc && loggedInAdminAcc.schoolName) || this.schoolNames[0] || '';
+    const adminSchoolTeacherIds = new Set(this.teachers.filter(t => t.schoolName === adminSelectedSchool).map(t => t.id));
+    const teacherNameById = {}; const classPeriodById = {};
+    this.teachers.forEach(t => { teacherNameById[t.id] = t.name; t.classes.forEach(c => { classPeriodById[c.id] = c.period; }); });
+    let adminRosterFiltered = this.rosterRaw.filter(r => adminSchoolTeacherIds.has(r.teacherId));
+    const adminSearchQ = (s.adminRosterSearch || '').toLowerCase();
+    if (adminSearchQ) adminRosterFiltered = adminRosterFiltered.filter(r => r.name.toLowerCase().includes(adminSearchQ) || (r.username || '').toLowerCase().includes(adminSearchQ));
+    adminRosterFiltered = [...adminRosterFiltered];
+    if (s.adminRosterSort === 'minutes') adminRosterFiltered.sort((a, b) => b.minutesRead - a.minutesRead);
+    else if (s.adminRosterSort === 'books') adminRosterFiltered.sort((a, b) => b.booksRead - a.booksRead);
+    else if (s.adminRosterSort === 'goal') adminRosterFiltered.sort((a, b) => pctOf(b) - pctOf(a));
+    else adminRosterFiltered.sort((a, b) => a.name.localeCompare(b.name));
+    const adminSchoolRoster = adminRosterFiltered.map(r => ({
+      ...r, pct: pctOf(r), teacherName: teacherNameById[r.teacherId] || '—', classPeriod: classPeriodById[r.classId] || '—'
+    }));
+
     const selStudentRaw = this.rosterRaw.find(r => r.id === s.selectedStudentId);
     const selectedStudent = selStudentRaw ? {
       ...selStudentRaw, pct: pctOf(selStudentRaw), fullName: fullNameOf(selStudentRaw), hasUsername: !!selStudentRaw.username,
@@ -1981,6 +2059,22 @@ class Component extends DCLogic {
       adminUsername: s.adminUsername, onAdminUsername: (e) => this.setState({ adminUsername: e.target.value }),
       adminPassword: s.adminPassword, onAdminPassword: (e) => this.setState({ adminPassword: e.target.value }),
       adminError: s.adminError, submitAdminLogin: () => this.submitAdminLogin(),
+      adminSchoolOptions: this.schoolNames, adminSelectedSchool, onAdminSelectedSchool: (e) => this.setState({ adminSelectedSchool: e.target.value }),
+      hasAdminTeacherId,
+      goMyClassesFromAdmin: () => {
+        const t = this.teachers.find(tt => tt.id === loggedInAdminAcc.teacherId);
+        if (!t) return;
+        this.saveSession({ role: 'teacher', teacherId: t.id });
+        this.setState({ authStage: 'app', role: 'teacher', currentTeacherId: t.id, selectedClassId: t.classes[0].id, adminViewingMyClasses: true });
+      },
+      backToAdminFromTeacher: () => {
+        this.saveSession({ role: 'admin', username: s.currentAdminUsername });
+        this.setState({ authStage: 'admin', role: 'admin', adminViewingMyClasses: false });
+      },
+      adminViewingMyClasses: s.adminViewingMyClasses,
+      adminRosterSearch: s.adminRosterSearch || '', onAdminRosterSearch: (e) => this.setState({ adminRosterSearch: e.target.value }),
+      adminRosterSort: s.adminRosterSort || 'name', onAdminRosterSort: (e) => this.setState({ adminRosterSort: e.target.value }),
+      adminSchoolRoster, hasAdminSchoolRoster: adminSchoolRoster.length > 0,
       fpIdentifier: s.fpIdentifier, onFpIdentifier: (e) => this.setState({ fpIdentifier: e.target.value }),
       fpNewPassword: s.fpNewPassword, onFpNewPassword: (e) => this.setState({ fpNewPassword: e.target.value }),
       fpStage: s.fpStage, isFpEnter: s.fpStage === 'enter', isFpReset: s.fpStage === 'reset', fpError: s.fpError, fpFoundUsername: s.fpFoundUsername,
