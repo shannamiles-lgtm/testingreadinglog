@@ -391,7 +391,7 @@ body{margin:0;-webkit-font-smoothing:antialiased}
 
       <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
         <div onClick="{{ saveGoals }}" style="background:#2E5FA3;color:#fff;font-weight:700;font-size:15px;padding:16px;border-radius:16px;text-align:center;cursor:pointer;max-width:280px;flex:1;min-width:180px">Save my goals</div>
-        <div onClick="{{ resetGoalsToDefault }}" style="font-size:13px;font-weight:600;color:#9AA7B2;cursor:pointer">Reset to default (140 min/week · 10 books/year)</div>
+        <div onClick="{{ resetGoalsToDefault }}" style="font-size:13px;font-weight:600;color:#9AA7B2;cursor:pointer">Reset to default ({{ studentSchoolGoalLabel }})</div>
       </div>
     </sc-if>
 
@@ -963,6 +963,22 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         </div>
       </div>
 
+      <sc-if value="{{ hasAdminSelectedSchool }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px;background:#EAF4FC;border-radius:14px;padding:12px 16px">
+          <div style="font-size:12px;font-weight:700;color:#2E5FA3">School goal</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="number" min="1" value="{{ adminSchoolGoalMinutes }}" onInput="{{ onAdminSchoolGoalMinutes }}" style="width:70px;padding:8px 10px;border-radius:8px;border:1.5px solid #D3E7F7;font-size:13px;font-family:'Inter',sans-serif;box-sizing:border-box"></input>
+            <div style="font-size:12px;color:#5B7185">min/week</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="number" min="1" value="{{ adminSchoolGoalBooks }}" onInput="{{ onAdminSchoolGoalBooks }}" style="width:60px;padding:8px 10px;border-radius:8px;border:1.5px solid #D3E7F7;font-size:13px;font-family:'Inter',sans-serif;box-sizing:border-box"></input>
+            <div style="font-size:12px;color:#5B7185">books/year</div>
+          </div>
+          <div onClick="{{ saveSchoolGoal }}" style="background:#2E5FA3;color:#fff;font-weight:700;font-size:12px;padding:9px 16px;border-radius:10px;cursor:pointer">Apply to school</div>
+          <div style="font-size:12px;color:#5B7185">Sets the default for new sign-ups and updates all {{ adminSchoolStudentCount }} current students at this school.</div>
+        </div>
+      </sc-if>
+
       <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
         <input value="{{ adminRosterSearch }}" onInput="{{ onAdminRosterSearch }}" placeholder="Search students…" style="flex:1;min-width:180px;padding:10px 16px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;outline:none"></input>
         <select value="{{ adminRosterSort }}" onChange="{{ onAdminRosterSort }}" style="padding:10px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff">
@@ -973,22 +989,41 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         </select>
       </div>
 
-      <div style="display:grid;grid-template-columns:1.6fr 1.2fr 0.9fr 0.9fr 0.9fr 0.8fr 0.8fr;padding:0 12px 10px;font-size:11px;font-weight:700;color:#9AA7B2;text-transform:uppercase;letter-spacing:0.04em">
-        <div>Student</div><div>Teacher</div><div>Class</div><div>Minutes</div><div>Books</div><div>Goal %</div><div>Badges</div>
+      <div style="display:grid;grid-template-columns:1.5fr 1.1fr 0.8fr 1fr 1fr 0.7fr 0.7fr 0.9fr;padding:0 12px 10px;font-size:11px;font-weight:700;color:#9AA7B2;text-transform:uppercase;letter-spacing:0.04em">
+        <div>Student</div><div>Teacher</div><div>Class</div><div>Minutes</div><div>Books</div><div>Goal %</div><div>Badges</div><div>Goal edit</div>
       </div>
       <sc-if value="{{ hasAdminSchoolRoster }}" hint-placeholder-val="{{ false }}">
         <sc-for list="{{ adminSchoolRoster }}" as="r" hint-placeholder-count="6">
-          <div style="display:grid;grid-template-columns:1.6fr 1.2fr 0.9fr 0.9fr 0.9fr 0.8fr 0.8fr;align-items:center;padding:10px 12px;border-radius:12px;border-top:1px solid #F5FAFE">
+          <div style="display:grid;grid-template-columns:1.5fr 1.1fr 0.8fr 1fr 1fr 0.7fr 0.7fr 0.9fr;align-items:center;padding:10px 12px;border-radius:12px;border-top:1px solid #F5FAFE">
             <div>
               <div style="font-size:13px;font-weight:600">{{ r.name }}</div>
               <div style="font-size:12px;color:#9AA7B2">{{ r.username }}</div>
             </div>
             <div style="font-size:13px;color:#5B7185">{{ r.teacherName }}</div>
             <div style="font-size:13px;color:#5B7185">{{ r.classPeriod }}</div>
-            <div style="font-size:13px;color:#5B7185">{{ r.minutesRead }} / {{ r.minutesGoal }}</div>
-            <div style="font-size:13px;color:#5B7185">{{ r.booksRead }} / {{ r.booksGoal }}</div>
+            <sc-if value="{{ r.isEditingGoal }}" hint-placeholder-val="{{ false }}">
+              <input type="number" min="1" value="{{ r.editMinutes }}" onInput="{{ r.onEditMinutes }}" style="width:64px;padding:5px 6px;border-radius:6px;border:1.5px solid #D3E7F7;font-size:12px;box-sizing:border-box"></input>
+            </sc-if>
+            <sc-if value="{{ r.isNotEditingGoal }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:13px;color:#5B7185">{{ r.minutesRead }} / {{ r.minutesGoal }}</div>
+            </sc-if>
+            <sc-if value="{{ r.isEditingGoal }}" hint-placeholder-val="{{ false }}">
+              <input type="number" min="1" value="{{ r.editBooks }}" onInput="{{ r.onEditBooks }}" style="width:52px;padding:5px 6px;border-radius:6px;border:1.5px solid #D3E7F7;font-size:12px;box-sizing:border-box"></input>
+            </sc-if>
+            <sc-if value="{{ r.isNotEditingGoal }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:13px;color:#5B7185">{{ r.booksRead }} / {{ r.booksGoal }}</div>
+            </sc-if>
             <div style="font-size:13px;font-weight:700;color:#2E5FA3">{{ r.pct }}%</div>
             <div style="font-size:13px;color:#5B7185">{{ r.badgesCount }}</div>
+            <sc-if value="{{ r.isNotEditingGoal }}" hint-placeholder-val="{{ true }}">
+              <div onClick="{{ r.startEditGoal }}" style="font-size:12px;font-weight:700;color:#2E5FA3;cursor:pointer">Edit</div>
+            </sc-if>
+            <sc-if value="{{ r.isEditingGoal }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:8px">
+                <div onClick="{{ r.saveGoalEdit }}" style="font-size:12px;font-weight:700;color:#2E5FA3;cursor:pointer">Save</div>
+                <div onClick="{{ r.cancelEditGoal }}" style="font-size:12px;font-weight:700;color:#9AA7B2;cursor:pointer">Cancel</div>
+              </div>
+            </sc-if>
           </div>
         </sc-for>
       </sc-if>
@@ -1121,6 +1156,8 @@ class Component extends DCLogic {
     liUsername: '', liPassword: '', liError: '',
     adminUsername: '', adminPassword: '', adminError: '', currentAdminUsername: null, adminSelectedSchool: '', adminViewingMyClasses: false,
     adminRosterSearch: '', adminRosterSort: 'name',
+    adminSchoolGoalMinutes: null, adminSchoolGoalBooks: null,
+    adminEditingStudentId: null, adminEditMinutes: '', adminEditBooks: '',
     fpIdentifier: '', fpNewPassword: '', fpStage: 'enter', fpError: '', fpFoundUsername: '',
     adminEditingUsername: null, adminEditValue: '',
     newBadgeName: '', newBadgeIconDataUrl: '', newBadgeIconName: '', newBadgePeriod: 'weekly', newBadgeMinutes: 100, newBadgeError: '',
@@ -1168,6 +1205,7 @@ class Component extends DCLogic {
   schoolNames = ['Lincoln Middle School', 'Roosevelt Middle School'];
   noSchoolLabel = 'Homeschool / No school';
   customBadges = [];
+  schoolGoals = {};
   teachers = [
     { id: 't1', name: 'Ms. Karen Carpenter', schoolName: 'Lincoln Middle School', schoolYear: '2026-2027', classes: [{ id: 'c1', period: '1st Period' }, { id: 'c2', period: '3rd Period' }] },
     { id: 't2', name: 'Mr. James Alvarez', schoolName: 'Roosevelt Middle School', schoolYear: '2026-2027', classes: [{ id: 'c3', period: '2nd Period' }] }
@@ -1279,7 +1317,7 @@ class Component extends DCLogic {
 
   saveData() {
     try {
-      localStorage.setItem('wildread_data', JSON.stringify({ accounts: this.accounts, teachers: this.teachers, rosterRaw: this.rosterRaw, idCounter: this._idCounter, schoolNames: this.schoolNames, customBadges: this.customBadges }));
+      localStorage.setItem('wildread_data', JSON.stringify({ accounts: this.accounts, teachers: this.teachers, rosterRaw: this.rosterRaw, idCounter: this._idCounter, schoolNames: this.schoolNames, customBadges: this.customBadges, schoolGoals: this.schoolGoals }));
     } catch (e) {}
   }
 
@@ -1299,6 +1337,7 @@ class Component extends DCLogic {
       if (parsed.idCounter) this._idCounter = parsed.idCounter;
       if (parsed.schoolNames) this.schoolNames = parsed.schoolNames;
       if (Array.isArray(parsed.customBadges)) this.customBadges = parsed.customBadges;
+      if (parsed.schoolGoals) this.schoolGoals = parsed.schoolGoals;
     } catch (e) {}
   }
 
@@ -1373,6 +1412,30 @@ class Component extends DCLogic {
     this.teachers = this.teachers.map(t => t.schoolName === name ? { ...t, schoolName: '' } : t);
     this.saveData();
     this.forceUpdate();
+  }
+
+  getSchoolGoal(schoolName) {
+    return this.schoolGoals[schoolName] || { minutesGoal: 140, booksGoal: 10 };
+  }
+
+  adminSaveSchoolGoal(schoolName, minutesRaw, booksRaw) {
+    if (!schoolName) return;
+    const minutesGoal = Math.max(1, Math.round(Number(minutesRaw) || 0));
+    const booksGoal = Math.max(1, Math.round(Number(booksRaw) || 0));
+    this.schoolGoals = { ...this.schoolGoals, [schoolName]: { minutesGoal, booksGoal } };
+    const schoolTeacherIds = new Set(this.teachers.filter(t => t.schoolName === schoolName).map(t => t.id));
+    this.rosterRaw = this.rosterRaw.map(r => schoolTeacherIds.has(r.teacherId) ? { ...r, minutesGoal, booksGoal } : r);
+    this.saveData();
+    this.setState({ adminSchoolGoalMinutes: null, adminSchoolGoalBooks: null });
+  }
+
+  adminSaveStudentGoal(studentId) {
+    const s = this.state;
+    const minutesGoal = Math.max(1, Math.round(Number(s.adminEditMinutes) || 0));
+    const booksGoal = Math.max(1, Math.round(Number(s.adminEditBooks) || 0));
+    this.rosterRaw = this.rosterRaw.map(r => r.id === studentId ? { ...r, minutesGoal, booksGoal } : r);
+    this.saveData();
+    this.setState({ adminEditingStudentId: null, adminEditMinutes: '', adminEditBooks: '' });
   }
 
   onBadgeIconFile(e) {
@@ -1547,10 +1610,11 @@ class Component extends DCLogic {
     this._idCounter += 1;
     const studentId = this._idCounter;
     const nowIso = new Date().toISOString();
-    this.student = { name: displayName, initials, minutesGoal: 140, minutesCurrent: 0, booksGoal: 10, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso, monthlyMinutesTotal: 0, monthlyPeriodStart: nowIso, yearlyMinutesTotal: 0, yearlyPeriodStart: nowIso };
+    const schoolGoal = this.getSchoolGoal(s.suSchoolName);
+    this.student = { name: displayName, initials, minutesGoal: schoolGoal.minutesGoal, minutesCurrent: 0, booksGoal: schoolGoal.booksGoal, booksCurrent: 0, teacherId, classId, username: s.suUsername.trim(), studentId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso, monthlyMinutesTotal: 0, monthlyPeriodStart: nowIso, yearlyMinutesTotal: 0, yearlyPeriodStart: nowIso };
     this.resetStudentProgress();
     this.checkGoalPeriods();
-    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: 140, booksRead: 0, booksGoal: 10, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso, monthlyMinutesTotal: 0, monthlyPeriodStart: nowIso, yearlyMinutesTotal: 0, yearlyPeriodStart: nowIso }];
+    this.rosterRaw = [...this.rosterRaw, { id: studentId, name: displayName, firstName: s.suFirstName.trim(), lastName: s.suLastName.trim(), username: s.suUsername.trim(), minutesRead: 0, minutesGoal: schoolGoal.minutesGoal, booksRead: 0, booksGoal: schoolGoal.booksGoal, badgesCount: 0, avatarColor: '#EAF4FC', teacherId, classId, signupDate: nowIso, minutesGoalPeriodStart: nowIso, booksGoalPeriodStart: nowIso, monthlyMinutesTotal: 0, monthlyPeriodStart: nowIso, yearlyMinutesTotal: 0, yearlyPeriodStart: nowIso }];
     if (s.suUsername.trim()) this.accounts = [...this.accounts, { username: s.suUsername.trim(), password: s.suPassword, role: 'student', studentId, email: s.suEmail.trim() }];
     this.saveData();
     this.saveSession({ role: 'student', studentId, username: s.suUsername.trim() });
@@ -1926,9 +1990,25 @@ class Component extends DCLogic {
     else if (s.adminRosterSort === 'books') adminRosterFiltered.sort((a, b) => b.booksRead - a.booksRead);
     else if (s.adminRosterSort === 'goal') adminRosterFiltered.sort((a, b) => pctOf(b) - pctOf(a));
     else adminRosterFiltered.sort((a, b) => a.name.localeCompare(b.name));
-    const adminSchoolRoster = adminRosterFiltered.map(r => ({
-      ...r, pct: pctOf(r), teacherName: teacherNameById[r.teacherId] || '—', classPeriod: classPeriodById[r.classId] || '—'
-    }));
+    const adminSchoolRoster = adminRosterFiltered.map(r => {
+      const isEditingGoal = s.adminEditingStudentId === r.id;
+      return {
+        ...r, pct: pctOf(r), teacherName: teacherNameById[r.teacherId] || '—', classPeriod: classPeriodById[r.classId] || '—',
+        isEditingGoal, isNotEditingGoal: !isEditingGoal,
+        editMinutes: isEditingGoal ? s.adminEditMinutes : '',
+        editBooks: isEditingGoal ? s.adminEditBooks : '',
+        onEditMinutes: (e) => this.setState({ adminEditMinutes: e.target.value }),
+        onEditBooks: (e) => this.setState({ adminEditBooks: e.target.value }),
+        startEditGoal: () => this.setState({ adminEditingStudentId: r.id, adminEditMinutes: String(r.minutesGoal), adminEditBooks: String(r.booksGoal) }),
+        saveGoalEdit: () => this.adminSaveStudentGoal(r.id),
+        cancelEditGoal: () => this.setState({ adminEditingStudentId: null, adminEditMinutes: '', adminEditBooks: '' })
+      };
+    });
+
+    const adminSchoolGoalDefaults = this.getSchoolGoal(adminSelectedSchool);
+    const adminSchoolGoalMinutes = s.adminSchoolGoalMinutes !== null ? s.adminSchoolGoalMinutes : String(adminSchoolGoalDefaults.minutesGoal);
+    const adminSchoolGoalBooks = s.adminSchoolGoalBooks !== null ? s.adminSchoolGoalBooks : String(adminSchoolGoalDefaults.booksGoal);
+    const adminSchoolStudentCount = adminSchoolRoster.length;
 
     const selStudentRaw = this.rosterRaw.find(r => r.id === s.selectedStudentId);
     const selectedStudent = selStudentRaw ? {
@@ -1981,12 +2061,17 @@ class Component extends DCLogic {
         this.setScreen('dashboard');
       },
       resetGoalsToDefault: () => {
-        this.student.minutesGoal = 140;
-        this.student.booksGoal = 10;
+        const g = this.getSchoolGoal((this.teachers.find(t => t.id === this.student.teacherId) || {}).schoolName);
+        this.student.minutesGoal = g.minutesGoal;
+        this.student.booksGoal = g.booksGoal;
         this.syncRosterEntry();
         this.saveData();
-        this.setState({ draftMinutesGoal: 140, draftBooksGoal: 10 });
+        this.setState({ draftMinutesGoal: g.minutesGoal, draftBooksGoal: g.booksGoal });
       },
+      studentSchoolGoalLabel: (() => {
+        const g = this.getSchoolGoal((this.teachers.find(t => t.id === this.student.teacherId) || {}).schoolName);
+        return `${g.minutesGoal} min/week · ${g.booksGoal} books/year`;
+      })(),
       goGoalsFromAccount: () => {
         this.setState({ showAccountPanel: false, draftMinutesGoal: this.student.minutesGoal, draftBooksGoal: this.student.booksGoal });
         this.setScreen('goals');
@@ -2074,7 +2159,11 @@ class Component extends DCLogic {
       adminUsername: s.adminUsername, onAdminUsername: (e) => this.setState({ adminUsername: e.target.value }),
       adminPassword: s.adminPassword, onAdminPassword: (e) => this.setState({ adminPassword: e.target.value }),
       adminError: s.adminError, submitAdminLogin: () => this.submitAdminLogin(),
-      adminSchoolOptions: this.schoolNames, adminSelectedSchool, onAdminSelectedSchool: (e) => this.setState({ adminSelectedSchool: e.target.value }),
+      adminSchoolOptions: this.schoolNames, adminSelectedSchool, onAdminSelectedSchool: (e) => this.setState({ adminSelectedSchool: e.target.value, adminSchoolGoalMinutes: null, adminSchoolGoalBooks: null }),
+      adminSchoolGoalMinutes, adminSchoolGoalBooks, adminSchoolStudentCount, hasAdminSelectedSchool: !!adminSelectedSchool,
+      onAdminSchoolGoalMinutes: (e) => this.setState({ adminSchoolGoalMinutes: e.target.value }),
+      onAdminSchoolGoalBooks: (e) => this.setState({ adminSchoolGoalBooks: e.target.value }),
+      saveSchoolGoal: () => this.adminSaveSchoolGoal(adminSelectedSchool, adminSchoolGoalMinutes, adminSchoolGoalBooks),
       hasAdminTeacherId,
       goMyClassesFromAdmin: () => {
         const t = this.teachers.find(tt => tt.id === loggedInAdminAcc.teacherId);
