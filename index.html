@@ -841,12 +841,27 @@ body{margin:0;-webkit-font-smoothing:antialiased}
         </select>
         <sc-if value="{{ suSchoolName }}" hint-placeholder-val="{{ false }}">
           <div style="font-weight:700;font-size:13px;margin-bottom:6px">Your teacher</div>
-          <select value="{{ suTeacherId }}" onChange="{{ onSuTeacher }}" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box;margin-bottom:14px">
-            <option value="">Choose a teacher…</option>
-            <sc-for list="{{ teacherOptions }}" as="t" hint-placeholder-count="2">
-              <option value="{{ t.id }}">{{ t.name }}</option>
-            </sc-for>
-          </select>
+          <div style="position:relative;margin-bottom:14px">
+            <sc-if value="{{ suTeacherDropdownOpen }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ closeSuTeacherDropdown }}" style="position:fixed;inset:0;z-index:5"></div>
+            </sc-if>
+            <div onClick="{{ toggleSuTeacherDropdown }}" style="width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #D3E7F7;font-size:14px;font-family:'Inter',sans-serif;background:#fff;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative;z-index:6">
+              <sc-if value="{{ hasSuTeacherSelected }}" hint-placeholder-val="{{ false }}">
+                <div style="color:#16283D">{{ suTeacherSelectedName }}</div>
+              </sc-if>
+              <sc-if value="{{ !hasSuTeacherSelected }}" hint-placeholder-val="{{ true }}">
+                <div style="color:#9AA7B2">Choose a teacher…</div>
+              </sc-if>
+              <div style="color:#9AA7B2;font-size:11px;flex-shrink:0">▼</div>
+            </div>
+            <sc-if value="{{ suTeacherDropdownOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border-radius:12px;border:1.5px solid #D3E7F7;box-shadow:0 8px 20px rgba(22,40,61,0.14);z-index:7;max-height:220px;overflow-y:auto">
+                <sc-for list="{{ teacherOptions }}" as="t" hint-placeholder-count="2">
+                  <div onClick="{{ t.select }}" style="padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;cursor:pointer;border-bottom:1px solid #F5FAFE">{{ t.name }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
         </sc-if>
         <sc-if value="{{ suTeacherId }}" hint-placeholder-val="{{ false }}">
           <div style="font-weight:700;font-size:13px;margin-bottom:6px">Your class</div>
@@ -1101,7 +1116,7 @@ class Component extends DCLogic {
   state = {
     isMobile: (typeof window !== 'undefined' && window.innerWidth < 900),
     authStage: 'role',
-    suFirstName: '', suLastName: '', suSchoolYear: '2026-2027', suSchoolName: '', suTeacherId: '', suClassId: '', suUsername: '', suPassword: '', suEmail: '',
+    suFirstName: '', suLastName: '', suSchoolYear: '2026-2027', suSchoolName: '', suTeacherId: '', suClassId: '', suUsername: '', suPassword: '', suEmail: '', suTeacherDropdownOpen: false,
     tuName: '', tuSchoolName: '', tuSchoolYear: '2026-2027', tuNewPeriod: '', tuClassesDraft: [], tuUsername: '', tuPassword: '', tuEmail: '', tuAdminCode: '',
     liUsername: '', liPassword: '', liError: '',
     adminUsername: '', adminPassword: '', adminError: '', currentAdminUsername: null, adminSelectedSchool: '', adminViewingMyClasses: false,
@@ -2109,12 +2124,20 @@ class Component extends DCLogic {
       addCustomBadge: () => this.addCustomBadge(),
       schoolYearOptions: this.schoolYearOptions,
       schoolOptions: [...this.schoolNames, this.noSchoolLabel],
-      teacherOptions: this.teachers.filter(t => t.schoolName === s.suSchoolName).map(t => ({ id: t.id, name: t.name })),
+      teacherOptions: this.teachers.filter(t => t.schoolName === s.suSchoolName).map(t => ({
+        id: t.id, name: t.name,
+        select: () => this.setState({ suTeacherId: t.id, suClassId: '', suTeacherDropdownOpen: false })
+      })),
+      suTeacherDropdownOpen: s.suTeacherDropdownOpen,
+      toggleSuTeacherDropdown: () => this.setState(st => ({ suTeacherDropdownOpen: !st.suTeacherDropdownOpen })),
+      closeSuTeacherDropdown: () => this.setState({ suTeacherDropdownOpen: false }),
+      suTeacherSelectedName: (this.teachers.find(t => t.id === s.suTeacherId) || {}).name || 'Choose a teacher…',
+      hasSuTeacherSelected: !!s.suTeacherId,
       suFirstName: s.suFirstName, onSuFirstName: (e) => this.setState({ suFirstName: e.target.value }),
       suLastName: s.suLastName, onSuLastName: (e) => this.setState({ suLastName: e.target.value }),
       suSchoolYear: s.suSchoolYear, onSuSchoolYear: (e) => this.setState({ suSchoolYear: e.target.value }),
-      suSchoolName: s.suSchoolName, onSuSchoolName: (e) => this.setState({ suSchoolName: e.target.value, suTeacherId: '', suClassId: '' }),
-      suTeacherId: s.suTeacherId, onSuTeacher: (e) => this.setState({ suTeacherId: e.target.value, suClassId: '' }),
+      suSchoolName: s.suSchoolName, onSuSchoolName: (e) => this.setState({ suSchoolName: e.target.value, suTeacherId: '', suClassId: '', suTeacherDropdownOpen: false }),
+      suTeacherId: s.suTeacherId,
       suClassId: s.suClassId, onSuClass: (e) => this.setState({ suClassId: e.target.value }),
       classOptionsForSuTeacher: (this.teachers.find(t => t.id === s.suTeacherId) || { classes: [] }).classes,
       submitStudentSignup: () => this.submitStudentSignup(),
